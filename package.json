@@ -1,0 +1,10 @@
+{
+  "name": "netsafe",
+  "version": "1.0.0",
+  "description": "NetSafe: a personal internet safety assistant (static HTML/CSS/JavaScript, no dependencies).",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run-all.js"
+  },
+  "engines": { "node": ">=20" }
+}

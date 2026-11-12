@@ -1,56 +1,79 @@
-# NetSafe - Wi-Fi Security and Risk Assessment
+# NetSafe: Personal Internet Safety Assistant
 
-Educational tool that turns Wi-Fi security details into a simple, explained risk estimate. Built for an Information Security course and SafeSpace Hacks 2026.
+NetSafe helps ordinary people decide what to do about a suspicious link, a scam message, a weak password or an unfamiliar Wi-Fi network. It explains each warning sign in plain English: what was noticed, why it matters, what could happen, and what to do now. Built for an Information Security / Computer Networks course and SafeSpace Hacks 2026.
 
-**It does not scan, test or access networks, and never collects Wi-Fi passwords.** Results are a rule-based educational estimate.
+**Everything runs in your browser. Nothing is stored or sent anywhere, links are never opened, and networks are never scanned.** Results are transparent, rule-based estimates, not AI and not a guarantee of safety.
 
-## Run
-No install needed. Open `index.html` in a browser (or `python3 -m http.server` and visit localhost:8000).
-Tests (Node 16+): `node tests/rules.test.js`, `tools.test.js`, `url.test.js`, `message.test.js`, `password.test.js`, `crypto.test.js`, `wifi.test.js` and `overview.test.js` (same folder; Node 20+ for the crypto tests)
+![NetSafe overview](docs/screenshots/08-overview-results-desktop.png)
 
-## Structure
-- `index.html` page, `css/style.css` styling
-- `js/typing.js` newsroom typing effect + ticker (respects reduced motion)
-- `js/password.js` password analyzer + `js/password-ui.js`; `js/crypto.js` AES-GCM / SHA-256 demos (Web Crypto) + `js/crypto-ui.js`; `js/tools.js` now holds the Caesar cipher (and a small wrapper `pwStrength`)
-- `js/overview.js` (privacy-safe summaries, statuses, action plan; pure logic) + `js/overview-ui.js`
-- `js/wifi-ui.js` Wi-Fi result display (safe DOM); `js/rules.js` holds the Wi-Fi scoring rules
-- `js/message.js` scam-message analyzer (rule table `MSG_RULES`), `js/message-ui.js` its interface
-- `js/url.js` link analyzer (pure logic, weights in `URL_CONFIG`), `js/url-ui.js` its interface (uses `textContent` only, never `innerHTML`)
-- `js/rules.js` scoring rules (`CONFIG`) and engine, `js/content.js` education text, `js/tools.js` Caesar + password-strength logic, `js/app.js` UI
-- `assets/images/` logo files: `netsafe-logo.png` (footer), `netsafe-symbol.png` (header), favicons, and `netsafe-logo-original.png` (full-size artwork, e.g. for Devpost; not used by the page and safe to delete). `favicon.ico` sits at the project root.
-- `tests/rules.test.js` scoring and edge-case tests; `tests/tools.test.js` Caesar cipher and password-checker tests
+## What it does
 
-Architecture choice: static HTML/CSS/vanilla JS. No backend or database is needed because nothing is stored, which also keeps the demo reliable and private.
+| Question | What NetSafe checks | What it does not do |
+|---|---|---|
+| **Is this message a scam?** | Requests for OTP/PIN, passwords, card or ID details; payment and fee requests; threats; fake prizes; urgency; "new number" money requests; risky links; sender clues. Highlights each phrase in your message. | Understand meaning, verify who sent it, read images, cover most languages (English and a few Roman Urdu phrases only). |
+| **Is this link safe?** | HTTP vs HTTPS, IP-address links, `name@host` tricks, look-alike (punycode / mixed alphabet) names, shorteners, brand names on other domains, many subdomains, weaker signals. | Open the link, or check reputation, certificates, redirects or domain ownership. |
+| **Is my password strong?** | Length, common passwords (including `p@ssw0rd`-style swaps), keyboard and counting patterns, repeats, the "Word2024!" shape, famous phrases, reuse. | Predict cracking time, or check breach lists (that would mean sending your password elsewhere). |
+| **Is this Wi-Fi connection secure?** | Open, WEP, WPA, WPA2, WPA2/WPA3, WPA3, Enterprise, Enhanced Open; public or private; shared password; login (captive) page. Public Wi-Fi is not automatically rated dangerous. | Scan or test any network, or detect fake hotspots. It only uses your answers. |
+| **Help me understand online security** | Cryptography Lab with real AES-256-GCM and SHA-256 (browser Web Crypto), Caesar cipher, plus short explainers on encryption vs hashing, symmetric vs asymmetric, HTTPS/TLS, the CIA triad, WPA2 vs WPA3. | Protect real secrets. It is a learning demo. |
+| **Security Overview** | One place showing what you have checked: **Assessed**, **Not assessed** (never treated as safe) or **Information unavailable**. Important warnings, a prioritised "what to do next" plan (including what to do if you already clicked or replied), and a downloadable or printable report. | Give a single safety score. The checks measure different things, so none is invented. |
 
-## Deploy (static site, no build step)
-- **GitHub Pages:** push the files so `index.html` is at the repo root, then Settings > Pages > Deploy from a branch > `main` / `(root)` > Save. Site: `https://<username>.github.io/<repo>/`
-- **Netlify:** unzip, then drag the `netsafe` folder onto https://app.netlify.com/drop (or connect the repo with no build command and publish directory `.`).
+## Run it
 
-## Security Overview (Phase 6)
-One place that connects the four checks (links, messages, password, Wi-Fi). For each it shows one of three statuses: **Assessed**, **Not assessed** (nothing checked yet; never treated as safe) or **Information unavailable** (checked, but a key detail was unknown, e.g. Wi-Fi security type "I don't know" or a link typed without http/https). It also shows a headline, important warnings, and **What to do next**: for each Medium or High result, what was detected, why it matters, what could happen, what to do now, what to do if you already responded or clicked, and how to avoid it next time. Advice comes only from the findings of the checks you ran, and the most urgent items (scam messages, then links) come first.
-- **No overall score.** The four checks measure different things, so combining them would mislead. The headline counts results; it does not average them.
-- **Privacy.** Summaries are held in memory only, in the current tab, and vanish on reload. They contain only rule-written text: never the password, message text, matched phrases, sender, full link (only the site name), or network name. A password is added to the overview only when you leave the password field, never while typing. "Clear all results" empties it. Tests check each of these leaks, and were verified to fail when a leak is deliberately introduced.
+No install, no build, no dependencies.
 
-## Password checker and Cryptography Lab (Phase 4)
-**Password checker:** a heuristic estimate that rewards length and penalises common passwords (including look-alike swaps such as `p@ssw0rd`), keyboard and counting patterns, repeats, the "Word2024!" shape and famous example phrases. It explains each weakness and how to fix it. It never stores, logs or sends the password, and it does **not** predict cracking time or check breach lists (that would require sending the password elsewhere). An optional "I reuse this password" box shows the reuse risk.
-**Cryptography Lab:** Caesar cipher (kept); real AES-256-GCM encryption/decryption with a PBKDF2-SHA-256 key derived from a passphrase (random salt and nonce per message, tamper and wrong-passphrase detection); live SHA-256 hashing with an avalanche demo; and short explainers on encryption vs hashing, symmetric vs asymmetric, HTTPS/TLS, the CIA triad and WPA2 vs WPA3. These use the browser's Web Crypto API, which needs HTTPS or `localhost` (the page shows a clear message otherwise). It is a learning demo, not an audited tool for real secrets.
+1. Download or unzip the project.
+2. Open `index.html` in a browser. Or serve the folder: `python3 -m http.server 8000` and visit `http://localhost:8000`.
 
-## Message checker (Phase 3)
-Paste an SMS, WhatsApp message or email (optionally with the sender). NetSafe uses a transparent rule table to find wording scammers commonly use: requests for OTP/PIN, passwords or card/ID details, payment or fee requests, threats and account-closure warnings, fake prizes, urgency, generic official-sounding wording, secrecy, "new number" money requests, and risky links (judged with the link checker). Matching phrases are highlighted and numbered, and each finding explains what was noticed, why it matters, what could happen and what to do. **It is pattern matching, not AI**, covers English plus a few Roman Urdu phrases, cannot verify who sent a message, and a Low result does not prove a message is genuine. A genuine code notice ("never share this code") is not flagged.
+The AES demo needs a secure context (HTTPS or localhost; opening the file directly also worked in Chromium). If a browser reports it as unavailable, use the local server. Tested in Chromium only (see [known limitations](docs/KNOWN_LIMITATIONS.md)).
 
-## Link checker (Phase 2)
-Paste a link and NetSafe reads its text only: HTTP vs HTTPS, IP-address links, `user@host` tricks, look-alike (punycode / mixed-alphabet) names, link shorteners, brand names on other domains, many subdomains and a few weaker signals. Each finding explains what was noticed, why it matters, what could happen and what to do. **It never opens links and does not check reputation, certificates, redirects or domain ownership.** A Low result is not a safety guarantee.
+**Deploy (static site):** GitHub Pages (Settings > Pages > Deploy from branch `main` / root) or drag the folder onto Netlify Drop. Serve over HTTPS and add the response headers listed in [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
 
-## Wi-Fi assessment (Phase 5; edit `CONFIG` in `js/rules.js`)
-Based only on the answers you type: **NetSafe does not scan or test any network** and cannot detect a fake hotspot. Protocol choices: Open, WEP, WPA, WPA2, WPA2/WPA3 mixed, WPA3, Enterprise (own login), Enhanced Open (OWE), or "I don't know".
-Points: protocol (Open 60, WEP 55, WPA 45, Unknown 35, Enhanced Open 20, WPA2 15, WPA2/WPA3 12, Enterprise 8, WPA3 5) + no password 25 (5 for Enhanced Open) + public network 20 (10 for Enterprise) + shared password 15 + captive portal (yes 5 / unknown 3) + location 0-3. Capped at 100.
-The shared-password penalty applies only to WEP, WPA, WPA2 and WPA2/WPA3, because WPA3 and Enterprise give each device its own keys.
-Levels: 0-24 Low, 25-59 Medium, 60+ High. Open/WEP/WPA are always High. Unknown security type is at least Medium, and held at Medium when a password exists (uncertainty is not proof of danger). "Public" alone is never High: a cafe with a WPA2 password and a login page scores Medium.
-Contradictions (Open + password, Enhanced Open + password, Enterprise + one shared password, WPA3 + no password) and missing fields are rejected, never scored.
-Each finding explains what was noticed, why it matters, what could happen and what to do. Low means lower risk, never "completely secure".
+## Tests
+
+```
+node tests/run-all.js                         # or: npm test   (Node 20+, no packages needed)
+pip install playwright && playwright install chromium
+python3 tests/browser/browser_tests.py        # real-browser checks (starts its own local server)
+python3 tests/browser/browser_tests.py --screenshots docs/screenshots   # regenerate screenshots
+```
+
+Results of the last run, with what was and was not tested: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md).
+
+## Project layout
+
+```
+index.html              page (with Content-Security-Policy)
+css/style.css           styling (print view included)
+js/url.js               link analyzer            js/url-ui.js
+js/message.js           scam-message analyzer    js/message-ui.js
+js/password.js          password analyzer        js/password-ui.js
+js/rules.js             Wi-Fi scoring rules      js/wifi-ui.js
+js/crypto.js            AES-GCM / SHA-256        js/crypto-ui.js
+js/overview.js          summaries, statuses, plan, report      js/overview-ui.js
+js/tools.js             Caesar cipher            js/app.js, js/content.js  education text
+tests/*.test.js         unit tests (Node)        tests/browser/  Chromium tests
+docs/                   security & privacy, limitations, demo script, test results, audit, screenshots
+```
+
+Analysis logic (`url.js`, `message.js`, `password.js`, `rules.js`, `crypto.js`, `overview.js`) is pure and has no DOM access, so it is unit-tested directly. The `*-ui.js` files only render, using `textContent` (never `innerHTML`).
+
+## Changing the rules
+
+Everything is a readable table or config object: `URL_CONFIG` (weights, thresholds) in `js/url.js`; `MSG_RULES` and `MSG_CONFIG` in `js/message.js`; `CONFIG` (Wi-Fi points, thresholds, floors, ceilings) in `js/rules.js`; `PW_COMMON` and the scoring in `js/password.js`. After a change, run `npm test`. `tests/demo.test.js` checks every result claimed in the demo script, so it tells you when the script needs updating.
+
+Wi-Fi scoring in short: protocol (Open 60, WEP 55, WPA 45, Unknown 35, Enhanced Open 20, WPA2 15, WPA2/WPA3 12, Enterprise 8, WPA3 5) + no password 25 + public network 20 + shared password 15 (only where it applies: WEP, WPA, WPA2, mixed; WPA3 and Enterprise give each device its own keys) + captive portal 5 + location 0-3. Levels: 0-24 Low, 25-59 Medium, 60+ High. Open/WEP/WPA are always High. Unknown security type is at least Medium but held at Medium when a password exists.
+
+## Documentation
+
+- [Security and privacy](docs/SECURITY_AND_PRIVACY.md): data flow, controls, cryptography details, threat model, hosting headers
+- [Known limitations](docs/KNOWN_LIMITATIONS.md)
+- [Demo script](docs/DEMO_SCRIPT.md): realistic synthetic scenarios, each verified by tests
+- [Test results](docs/TEST_RESULTS.md)
+- [Audit and changes](docs/AUDIT_AND_CHANGES.md): what the original project had, what was fixed, and corrections made along the way
+- [Screenshots](docs/screenshots/): desktop and mobile of every module
 
 ## Course links
-Classic ciphers (Caesar, brute force) vs AES/TLS; hashing (PBKDF2 in WPA2, SAE key exchange in WPA3); authentication; MITM and evil twin attacks.
 
-## Limitations
-Relies on user input; cannot detect evil twins or verify real networks; password checker is a heuristic, not a cracking-time estimate. Not a penetration-testing tool or audit replacement.
+Wireless networks and Wi-Fi security protocols (WEP, WPA, WPA2, WPA3, Enterprise, Enhanced Open); encryption (AES-GCM) and hashing (SHA-256, PBKDF2 in WPA2, SAE in WPA3); HTTPS and TLS; authentication; man-in-the-middle and evil-twin attacks; social engineering and phishing; classic ciphers vs modern encryption.
+
+NetSafe is educational. It is not a penetration-testing tool, a professional security audit, or legal or financial advice.

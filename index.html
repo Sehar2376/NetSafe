@@ -4,17 +4,16 @@
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png"><link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
 <title>NetSafe - Personal Internet Safety Assistant</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
+<noscript><p class="noscript">NetSafe needs JavaScript to run its checks. Everything happens in your browser, and nothing is sent anywhere.</p></noscript>
 <header class="nav"><a class="brand" href="#top"><img src="assets/images/netsafe-symbol.png" alt="" width="34" height="34"><span>Net<span>Safe</span></span></a>
-<nav><a href="#overview">Overview</a><a href="#how">How it works</a><a href="#message">Check a message</a><a href="#link">Check a link</a><a href="#assess">Assess</a><a href="#learn">Learn</a><a href="#lab">Crypto Lab</a><a href="#pw">Password</a></nav></header>
-<div class="ticker" id="ticker" role="region" aria-label="Security briefing headlines"><span class="tk-label">Briefing</span><div class="tk-view"><div class="tk-track" id="tkTrack"></div></div></div>
+<nav aria-label="Main"><a href="#overview">Overview</a><a href="#how">How it works</a><a href="#message">Check a message</a><a href="#link">Check a link</a><a href="#assess">Assess</a><a href="#learn">Learn</a><a href="#lab">Crypto Lab</a><a href="#pw">Password</a></nav></header>
 <main id="top">
-<section class="hero"><div class="bp"><div class="bp-head"><span class="dot"></span>NetSafe briefing</div><p class="bp-line" id="heroLine">Check it before you click, reply or connect.</p></div>
-<h1>Check it before you click, reply or connect.</h1>
+<section class="hero"><h1>Check it before you click, reply or connect.</h1>
 <p class="lead">NetSafe helps you decide what to do about a suspicious link, a message that feels off, a weak password or an unfamiliar Wi-Fi network. It explains the warning signs in plain English. Everything runs in your browser. Nothing is stored or sent.</p>
 <div class="row"><a class="btn" href="#message">Check a message</a><a class="btn ghost" href="#link">Check a link</a><a class="btn ghost" href="#overview">See your overview</a></div>
 </section>
 
-<section id="overview"><p class="kicker" data-type>Everything you have checked, in one place.</p><h2>Your security overview</h2>
+<section id="overview"><p class="kicker">Everything you have checked, in one place.</p><h2>Your security overview</h2>
 <p class="note">This keeps a short summary of each check you run, in this tab only. It never keeps passwords, messages, full links or network names. There is no overall safety score, because the checks measure different things.</p>
 <div id="ovHead" class="ovhead" aria-live="polite"></div>
 <ul class="legend" aria-label="What the labels mean"><li><span class="pill assessed">Assessed</span> You ran this check.</li><li><span class="pill na">Not assessed</span> Not checked yet. This is not a sign of safety.</li><li><span class="pill unav">Information unavailable</span> Checked, but a key detail was unknown, so the result is limited.</li></ul>
@@ -22,9 +21,9 @@
 <div id="ovWarn"></div>
 <div id="ovPlan"></div>
 <ul class="notes" id="ovNotes"></ul>
-<div class="row"><button class="btn ghost" id="ovClear" type="button">Clear all results</button></div></section>
+<div class="row noprint"><button class="btn" id="ovReport" type="button">Download report (.txt)</button><button class="btn ghost" id="ovPrint" type="button">Print overview</button><button class="btn ghost" id="ovClear" type="button">Clear all results</button></div></section>
 <section id="how">
-<p class="kicker" data-type>How NetSafe turns warning signs into advice.</p>
+<p class="kicker">How NetSafe turns warning signs into advice.</p>
 <h2>How it works</h2>
 <div class="grid3">
 <div class="card"><b>1. Choose what to check</b><p>A link, a message, a password or a Wi-Fi network. Paste or describe it. Nothing leaves your device.</p></div>
@@ -34,7 +33,7 @@
 <p class="note">NetSafe is an educational, rule-based tool. It cannot guarantee that anything is safe, and it never opens links or scans networks.</p>
 </section>
 
-<section id="message"><p class="kicker" data-type>Got a message that feels off? Check it before you reply.</p><h2>Is this message a scam?</h2>
+<section id="message"><p class="kicker">Got a message that feels off? Check it before you reply.</p><h2>Is this message a scam?</h2>
 <div class="card"><p class="note">Paste a WhatsApp message, SMS or email. NetSafe looks for wording scammers commonly use and highlights it. This is simple rule-based matching, not AI. Nothing you paste is stored or sent anywhere. Do not paste real OTPs or passwords.</p>
 <form id="msgForm" novalidate><label for="msgIn">Paste the message</label><textarea id="msgIn" rows="6" maxlength="5000" spellcheck="false" placeholder="Paste the message text here"></textarea>
 <div class="fields msgopt"><label>Sender (optional)<input id="msgSender" type="text" maxlength="100" autocomplete="off" placeholder="Number, email address or name"></label>
@@ -44,7 +43,7 @@
 <div id="msgErr" class="errors" role="alert" hidden></div></div>
 <div id="msgResult" aria-live="polite"><p class="note empty">No message checked yet. Results appear here.</p></div></section>
 
-<section id="link"><p class="kicker" data-type>Got a link you are not sure about? Check it before you open it.</p><h2>Is this website link safe?</h2>
+<section id="link"><p class="kicker">Got a link you are not sure about? Check it before you open it.</p><h2>Is this website link safe?</h2>
 <div class="card"><p class="note">NetSafe reads only the text of the link. It never opens it, and nothing you paste is stored or sent anywhere. Use the examples to try it with made-up links.</p>
 <form id="urlForm" novalidate><label for="urlIn">Paste a link</label><input id="urlIn" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="e.g. https://example.com/login" maxlength="2100">
 <div class="row"><button class="btn" type="submit">Check link</button><button class="btn ghost" type="button" id="urlClear">Clear</button></div></form>
@@ -52,7 +51,7 @@
 <div id="urlErr" class="errors" role="alert" hidden></div></div>
 <div id="urlResult" aria-live="polite"><p class="note empty">No link checked yet. Results appear here.</p></div></section>
 
-<section id="assess"><p class="kicker" data-type>Answer a few questions. Nothing is scanned or stored.</p><h2>Wi-Fi risk assessment</h2>
+<section id="assess"><p class="kicker">Answer a few questions. Nothing is scanned or stored.</p><h2>Wi-Fi risk assessment</h2>
 <form id="form" class="card" novalidate>
 <div class="fields">
 <label>Network name (SSID)<input name="ssid" maxlength="32" placeholder="e.g. Free_Cafe_WiFi" autocomplete="off"><small>The name shown in your Wi-Fi list. Do not enter passwords.</small></label>
@@ -69,12 +68,12 @@
 </form>
 <div id="result" aria-live="polite"></div></section>
 
-<section id="learn"><p class="kicker" data-type>Know the terms behind the risk.</p><h2>Security education</h2><div id="edu" class="grid2"></div>
+<section id="learn"><p class="kicker">Know the terms behind the risk.</p><h2>Security education</h2><div id="edu" class="grid2"></div>
 <div class="card"><h3>Classic vs modern encryption</h3>
 <p><b>Classic ciphers</b> (Caesar, Vigenere, Playfair) use small key spaces and keep letter patterns visible. They fall to brute force and frequency analysis, quickly with a computer.</p>
 <p><b>Modern encryption</b> (AES in WPA2/WPA3, TLS in HTTPS) uses public, heavily tested algorithms with large keys. Security comes from the key, not a secret method (Kerckhoffs's principle). WPA2 derives its key from your password with PBKDF2 hashing, and WPA3 uses SAE, a password-based key exchange. Either way, a weak or widely shared password weakens protection.</p></div></section>
 
-<section id="lab"><p class="kicker" data-type>See real encryption and hashing run in your browser.</p><h2>Cryptography Lab</h2>
+<section id="lab"><p class="kicker">See real encryption and hashing run in your browser.</p><h2>Cryptography Lab</h2>
 <div class="card"><h3>1. A classic cipher: Caesar</h3><p class="note">Educational demo only. Classical ciphers must never be used to protect real data or Wi-Fi.</p>
 <label>Text to encrypt, or ciphertext to decrypt<input id="ctext" value="MEET AT THE CAFE" autocomplete="off"></label>
 <label>Shift (1-25)<input id="cshift" type="number" min="1" max="25" value="3"></label>
@@ -101,7 +100,7 @@
 <p class="note">Notice how a tiny change gives a completely different hash. This is how hashes reveal that a file was changed. Plain SHA-256 is not suitable for storing passwords because it is very fast to guess against. Services use slow, salted methods such as bcrypt, scrypt, Argon2 or PBKDF2.</p></div>
 <div id="concepts"></div></section>
 
-<section id="pw"><p class="kicker" data-type>Strength is checked in your browser only.</p><h2>Password strength checker</h2>
+<section id="pw"><p class="kicker">Strength is checked in your browser only.</p><h2>Password strength checker</h2>
 <div class="card"><p class="note">Runs only in your browser. Nothing is sent, stored or logged. Practise with a made-up password and never type one you really use.</p>
 <label for="pwin">Try a password</label>
 <div class="pwrow"><input id="pwin" type="password" autocomplete="new-password" spellcheck="false" maxlength="128" aria-describedby="pwhelp"><button type="button" class="btn ghost" id="pwshow" aria-pressed="false">Show</button></div>
@@ -113,6 +112,6 @@
 <div class="card"><b>Why multi-factor authentication matters</b><p>A second step (an authenticator app or security key) stops a stolen password from being enough. Never share these codes with anyone.</p></div>
 <div class="card"><b>An easier way</b><p>Use a long passphrase for the few passwords you must remember, and a reputable password manager for the rest.</p></div></div></section>
 </main>
-<footer><div class="ft"><a class="ft-logo" href="#top" aria-label="NetSafe, back to top"><img src="assets/images/netsafe-logo.png" alt="NetSafe: check, understand, stay safe" width="720" height="552"></a><nav><a href="#message">Check a message</a><a href="#link">Check a link</a><a href="#assess">Assess</a><a href="#learn">Learn</a><a href="#lab">Crypto Lab</a><a href="#pw">Password</a></nav></div><p>NetSafe is an educational project. It does not scan networks, collect credentials, or replace a professional security audit. SafeSpace Hacks 2026.</p></footer>
-<script src="js/rules.js"></script><script src="js/tools.js"></script><script src="js/url.js"></script><script src="js/message.js"></script><script src="js/content.js"></script><script src="js/password.js"></script><script src="js/crypto.js"></script><script src="js/typing.js"></script><script src="js/overview.js"></script><script src="js/app.js"></script><script src="js/wifi-ui.js"></script><script src="js/url-ui.js"></script><script src="js/message-ui.js"></script><script src="js/password-ui.js"></script><script src="js/crypto-ui.js"></script><script src="js/overview-ui.js"></script>
+<footer><div class="ft"><a class="ft-logo" href="#top" aria-label="NetSafe, back to top"><img src="assets/images/netsafe-logo.png" alt="NetSafe: check, understand, stay safe" width="720" height="552"></a><nav aria-label="Footer"><a href="#overview">Overview</a><a href="#message">Check a message</a><a href="#link">Check a link</a><a href="#assess">Assess</a><a href="#learn">Learn</a><a href="#lab">Crypto Lab</a><a href="#pw">Password</a></nav></div><p>NetSafe is an educational project. It does not open links, scan networks, collect credentials, or replace a professional security audit. SafeSpace Hacks 2026.</p></footer>
+<script src="js/rules.js"></script><script src="js/tools.js"></script><script src="js/url.js"></script><script src="js/message.js"></script><script src="js/content.js"></script><script src="js/password.js"></script><script src="js/crypto.js"></script><script src="js/overview.js"></script><script src="js/app.js"></script><script src="js/wifi-ui.js"></script><script src="js/url-ui.js"></script><script src="js/message-ui.js"></script><script src="js/password-ui.js"></script><script src="js/crypto-ui.js"></script><script src="js/overview-ui.js"></script>
 </body></html>
