@@ -6,12 +6,13 @@ Educational tool that turns Wi-Fi security details into a simple, explained risk
 
 ## Run
 No install needed. Open `index.html` in a browser (or `python3 -m http.server` and visit localhost:8000).
-Tests (Node 16+): `node tests/rules.test.js`, `tools.test.js`, `url.test.js`, `message.test.js`, `password.test.js` and `crypto.test.js` (same folder; Node 20+ for the crypto tests)
+Tests (Node 16+): `node tests/rules.test.js`, `tools.test.js`, `url.test.js`, `message.test.js`, `password.test.js`, `crypto.test.js` and `wifi.test.js` (same folder; Node 20+ for the crypto tests)
 
 ## Structure
 - `index.html` page, `css/style.css` styling
 - `js/typing.js` newsroom typing effect + ticker (respects reduced motion)
 - `js/password.js` password analyzer + `js/password-ui.js`; `js/crypto.js` AES-GCM / SHA-256 demos (Web Crypto) + `js/crypto-ui.js`; `js/tools.js` now holds the Caesar cipher (and a small wrapper `pwStrength`)
+- `js/wifi-ui.js` Wi-Fi result display (safe DOM); `js/rules.js` holds the Wi-Fi scoring rules
 - `js/message.js` scam-message analyzer (rule table `MSG_RULES`), `js/message-ui.js` its interface
 - `js/url.js` link analyzer (pure logic, weights in `URL_CONFIG`), `js/url-ui.js` its interface (uses `textContent` only, never `innerHTML`)
 - `js/rules.js` scoring rules (`CONFIG`) and engine, `js/content.js` education text, `js/tools.js` Caesar + password-strength logic, `js/app.js` UI
@@ -34,10 +35,13 @@ Paste an SMS, WhatsApp message or email (optionally with the sender). NetSafe us
 ## Link checker (Phase 2)
 Paste a link and NetSafe reads its text only: HTTP vs HTTPS, IP-address links, `user@host` tricks, look-alike (punycode / mixed-alphabet) names, link shorteners, brand names on other domains, many subdomains and a few weaker signals. Each finding explains what was noticed, why it matters, what could happen and what to do. **It never opens links and does not check reputation, certificates, redirects or domain ownership.** A Low result is not a safety guarantee.
 
-## Wi-Fi scoring (edit `CONFIG` in `js/rules.js`)
-Points: protocol (Open 60, WEP 55, WPA 45, Unknown 35, WPA2 15, WPA3 5) + no password 25 + public network 25 + shared password 15 + captive portal (yes 10 / unknown 5) + location 0-3. Capped at 100.
-Levels: 0-24 Low, 25-59 Medium, 60+ High. Minimum levels: Open/WEP/WPA are always High, Unknown at least Medium. Contradictions (e.g. Open + password, WPA3 + no password) and missing fields are rejected, never scored.
-Low means lower risk, never "completely secure".
+## Wi-Fi assessment (Phase 5; edit `CONFIG` in `js/rules.js`)
+Based only on the answers you type: **NetSafe does not scan or test any network** and cannot detect a fake hotspot. Protocol choices: Open, WEP, WPA, WPA2, WPA2/WPA3 mixed, WPA3, Enterprise (own login), Enhanced Open (OWE), or "I don't know".
+Points: protocol (Open 60, WEP 55, WPA 45, Unknown 35, Enhanced Open 20, WPA2 15, WPA2/WPA3 12, Enterprise 8, WPA3 5) + no password 25 (5 for Enhanced Open) + public network 20 (10 for Enterprise) + shared password 15 + captive portal (yes 5 / unknown 3) + location 0-3. Capped at 100.
+The shared-password penalty applies only to WEP, WPA, WPA2 and WPA2/WPA3, because WPA3 and Enterprise give each device its own keys.
+Levels: 0-24 Low, 25-59 Medium, 60+ High. Open/WEP/WPA are always High. Unknown security type is at least Medium, and held at Medium when a password exists (uncertainty is not proof of danger). "Public" alone is never High: a cafe with a WPA2 password and a login page scores Medium.
+Contradictions (Open + password, Enhanced Open + password, Enterprise + one shared password, WPA3 + no password) and missing fields are rejected, never scored.
+Each finding explains what was noticed, why it matters, what could happen and what to do. Low means lower risk, never "completely secure".
 
 ## Course links
 Classic ciphers (Caesar, brute force) vs AES/TLS; hashing (PBKDF2 in WPA2, SAE key exchange in WPA3); authentication; MITM and evil twin attacks.
