@@ -6,12 +6,13 @@ Educational tool that turns Wi-Fi security details into a simple, explained risk
 
 ## Run
 No install needed. Open `index.html` in a browser (or `python3 -m http.server` and visit localhost:8000).
-Tests (Node 16+): `node tests/rules.test.js`, `tools.test.js`, `url.test.js`, `message.test.js`, `password.test.js`, `crypto.test.js` and `wifi.test.js` (same folder; Node 20+ for the crypto tests)
+Tests (Node 16+): `node tests/rules.test.js`, `tools.test.js`, `url.test.js`, `message.test.js`, `password.test.js`, `crypto.test.js`, `wifi.test.js` and `overview.test.js` (same folder; Node 20+ for the crypto tests)
 
 ## Structure
 - `index.html` page, `css/style.css` styling
 - `js/typing.js` newsroom typing effect + ticker (respects reduced motion)
 - `js/password.js` password analyzer + `js/password-ui.js`; `js/crypto.js` AES-GCM / SHA-256 demos (Web Crypto) + `js/crypto-ui.js`; `js/tools.js` now holds the Caesar cipher (and a small wrapper `pwStrength`)
+- `js/overview.js` (privacy-safe summaries, statuses, action plan; pure logic) + `js/overview-ui.js`
 - `js/wifi-ui.js` Wi-Fi result display (safe DOM); `js/rules.js` holds the Wi-Fi scoring rules
 - `js/message.js` scam-message analyzer (rule table `MSG_RULES`), `js/message-ui.js` its interface
 - `js/url.js` link analyzer (pure logic, weights in `URL_CONFIG`), `js/url-ui.js` its interface (uses `textContent` only, never `innerHTML`)
@@ -24,6 +25,11 @@ Architecture choice: static HTML/CSS/vanilla JS. No backend or database is neede
 ## Deploy (static site, no build step)
 - **GitHub Pages:** push the files so `index.html` is at the repo root, then Settings > Pages > Deploy from a branch > `main` / `(root)` > Save. Site: `https://<username>.github.io/<repo>/`
 - **Netlify:** unzip, then drag the `netsafe` folder onto https://app.netlify.com/drop (or connect the repo with no build command and publish directory `.`).
+
+## Security Overview (Phase 6)
+One place that connects the four checks (links, messages, password, Wi-Fi). For each it shows one of three statuses: **Assessed**, **Not assessed** (nothing checked yet; never treated as safe) or **Information unavailable** (checked, but a key detail was unknown, e.g. Wi-Fi security type "I don't know" or a link typed without http/https). It also shows a headline, important warnings, and **What to do next**: for each Medium or High result, what was detected, why it matters, what could happen, what to do now, what to do if you already responded or clicked, and how to avoid it next time. Advice comes only from the findings of the checks you ran, and the most urgent items (scam messages, then links) come first.
+- **No overall score.** The four checks measure different things, so combining them would mislead. The headline counts results; it does not average them.
+- **Privacy.** Summaries are held in memory only, in the current tab, and vanish on reload. They contain only rule-written text: never the password, message text, matched phrases, sender, full link (only the site name), or network name. A password is added to the overview only when you leave the password field, never while typing. "Clear all results" empties it. Tests check each of these leaks, and were verified to fail when a leak is deliberately introduced.
 
 ## Password checker and Cryptography Lab (Phase 4)
 **Password checker:** a heuristic estimate that rewards length and penalises common passwords (including look-alike swaps such as `p@ssw0rd`), keyboard and counting patterns, repeats, the "Word2024!" shape and famous example phrases. It explains each weakness and how to fix it. It never stores, logs or sends the password, and it does **not** predict cracking time or check breach lists (that would require sending the password elsewhere). An optional "I reuse this password" box shows the reuse risk.
