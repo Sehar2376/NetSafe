@@ -1,79 +1,102 @@
-# NetSafe: Personal Internet Safety Assistant
+# NetSafe
 
-NetSafe helps ordinary people decide what to do about a suspicious link, a scam message, a weak password or an unfamiliar Wi-Fi network. It explains each warning sign in plain English: what was noticed, why it matters, what could happen, and what to do now. Built for an Information Security / Computer Networks course and SafeSpace Hacks 2026.
+**Check it before you click, reply or connect.** NetSafe is a privacy-first safety assistant for everyday internet situations. It explains in plain English whether a message, link, password or Wi-Fi network deserves caution, why, and exactly what to do next.
 
-**Everything runs in your browser. Nothing is stored or sent anywhere, links are never opened, and networks are never scanned.** Results are transparent, rule-based estimates, not AI and not a guarantee of safety.
+![NetSafe overview](docs/screenshots/overview-desktop.png)
 
-![NetSafe overview](docs/screenshots/08-overview-results-desktop.png)
+Runs entirely in your browser: nothing you type is stored or sent anywhere, links are never opened, and networks are never scanned. Results come from transparent rules, not AI, and are never a guarantee of safety.
 
-## What it does
+## Why it exists
 
-| Question | What NetSafe checks | What it does not do |
-|---|---|---|
-| **Is this message a scam?** | Requests for OTP/PIN, passwords, card or ID details; payment and fee requests; threats; fake prizes; urgency; "new number" money requests; risky links; sender clues. Highlights each phrase in your message. | Understand meaning, verify who sent it, read images, cover most languages (English and a few Roman Urdu phrases only). |
-| **Is this link safe?** | HTTP vs HTTPS, IP-address links, `name@host` tricks, look-alike (punycode / mixed alphabet) names, shorteners, brand names on other domains, many subdomains, weaker signals. | Open the link, or check reputation, certificates, redirects or domain ownership. |
-| **Is my password strong?** | Length, common passwords (including `p@ssw0rd`-style swaps), keyboard and counting patterns, repeats, the "Word2024!" shape, famous phrases, reuse. | Predict cracking time, or check breach lists (that would mean sending your password elsewhere). |
-| **Is this Wi-Fi connection secure?** | Open, WEP, WPA, WPA2, WPA2/WPA3, WPA3, Enterprise, Enhanced Open; public or private; shared password; login (captive) page. Public Wi-Fi is not automatically rated dangerous. | Scan or test any network, or detect fake hotspots. It only uses your answers. |
-| **Help me understand online security** | Cryptography Lab with real AES-256-GCM and SHA-256 (browser Web Crypto), Caesar cipher, plus short explainers on encryption vs hashing, symmetric vs asymmetric, HTTPS/TLS, the CIA triad, WPA2 vs WPA3. | Protect real secrets. It is a learning demo. |
-| **Security Overview** | One place showing what you have checked: **Assessed**, **Not assessed** (never treated as safe) or **Information unavailable**. Important warnings, a prioritised "what to do next" plan (including what to do if you already clicked or replied), and a downloadable or printable report. | Give a single safety score. The checks measure different things, so none is invented. |
+People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, and terms like OTP, HTTPS or WPA2 are confusing, so many people guess. NetSafe's goal is to help ordinary people make a safer decision in these four situations: understand the warning signs, and know what to do next, including what to do if they already clicked or replied.
 
-## Run it
+## Features
 
-No install, no build, no dependencies.
+| Page | What it does |
+|---|---|
+| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats, fake prizes, urgency, "new number" scams, risky links, sender clues) and highlights each phrase |
+| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike (punycode) names, shorteners, brands on other domains, and more |
+| **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps), keyboard and counting patterns, repeats, famous phrases and reuse |
+| **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page). Public Wi-Fi is not automatically rated dangerous |
+| **Overview** | Everything you checked: Assessed, Not assessed or Information unavailable, a prioritised plan, and a downloadable or printable report. No combined score |
+| **Crypto Lab** | Real AES-256-GCM and SHA-256 using the browser's Web Crypto API, a Caesar cipher, and short explainers (HTTPS/TLS, hashing, WPA2 vs WPA3) |
+| **Learn** | A glossary, and **How NetSafe decides**: every rule with its points and an example |
 
-1. Download or unzip the project.
-2. Open `index.html` in a browser. Or serve the folder: `python3 -m http.server 8000` and visit `http://localhost:8000`.
+## Quick start
 
-The AES demo needs a secure context (HTTPS or localhost; opening the file directly also worked in Chromium). If a browser reports it as unavailable, use the local server. Tested in Chromium only (see [known limitations](docs/KNOWN_LIMITATIONS.md)).
+```bash
+git clone <your-repo-url> && cd netsafe
+python serve.py          # opens http://127.0.0.1:8000
+```
 
-**Deploy (static site):** GitHub Pages (Settings > Pages > Deploy from branch `main` / root) or drag the folder onto Netlify Drop. Serve over HTTPS and add the response headers listed in [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
+`serve.py` is a tiny local server (Python standard library, no installs) that adds real security headers and serves only the app's files. You can also open `index.html` directly (tested in Chromium) or host the folder on GitHub Pages or Netlify. If the page says "NetSafe's tools are not running", a script was blocked or a folder is missing: use `python serve.py`.
 
-## Tests
+## How it works
+
+```mermaid
+flowchart LR
+  U((User)) --> UI["UI layer<br/>*-ui.js"]
+  UI --> E["Rule engines<br/>url · message · password · wifi · crypto"]
+  E --> UI
+  UI --> O["overview.js<br/>privacy-safe summaries"]
+  O --> UI
+```
+
+- **Engines are pure functions** (no DOM, network or storage) that run unchanged in the browser and under Node tests.
+- **Rules are data.** Each engine has one readable rule table; the Learn page is generated from the same tables.
+- **The overview only receives rule-written advice**, never what you typed (tests check this for every input type).
+
+Details, a worked rule example and the decision log: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Project structure
 
 ```
-node tests/run-all.js                         # or: npm test   (Node 20+, no packages needed)
+index.html            single page with eight views (Home, Message, Link, Password, Wi-Fi, Overview, Crypto Lab, Learn)
+serve.py              local server with security headers (Python, standard library)
+css/style.css
+js/
+  url.js  message.js  password.js  rules.js  crypto.js     rule engines (pure)
+  overview.js                                              summaries, statuses, plan, report
+  *-ui.js  nav.js  content.js                              rendering, page navigation, text
+tests/
+  *.test.js                                                unit tests (Node)
+  test_serve.py                                            server tests (Python unittest)
+  browser/browser_tests.py                                 real-browser tests (Playwright)
+docs/                 architecture, security and privacy, limitations, demo script
+```
+
+## Testing
+
+```bash
+node tests/run-all.js                                  # unit tests (Node 20+, no packages)
+python -m unittest discover -s tests -p "test_*.py"    # server tests
 pip install playwright && playwright install chromium
-python3 tests/browser/browser_tests.py        # real-browser checks (starts its own local server)
-python3 tests/browser/browser_tests.py --screenshots docs/screenshots   # regenerate screenshots
+python tests/browser/browser_tests.py                  # browser tests, about 2 minutes (--only nav,overview for a subset)
 ```
 
-Results of the last run, with what was and was not tested: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md).
+Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; page navigation; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
 
-## Project layout
+## Privacy and security
 
-```
-index.html              page (with Content-Security-Policy)
-css/style.css           styling (print view included)
-js/url.js               link analyzer            js/url-ui.js
-js/message.js           scam-message analyzer    js/message-ui.js
-js/password.js          password analyzer        js/password-ui.js
-js/rules.js             Wi-Fi scoring rules      js/wifi-ui.js
-js/crypto.js            AES-GCM / SHA-256        js/crypto-ui.js
-js/overview.js          summaries, statuses, plan, report      js/overview-ui.js
-js/tools.js             Caesar cipher            js/app.js, js/content.js  education text
-tests/*.test.js         unit tests (Node)        tests/browser/  Chromium tests
-docs/                   security & privacy, limitations, demo script, test results, audit, screenshots
-```
+No backend, accounts, analytics or third-party code. A strict Content-Security-Policy blocks everything except the app's own files, so the page cannot send data out. All text is rendered with `textContent`. The AES demo uses only Web Crypto (PBKDF2 and AES-GCM). Full details and threat model: [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
 
-Analysis logic (`url.js`, `message.js`, `password.js`, `rules.js`, `crypto.js`, `overview.js`) is pure and has no DOM access, so it is unit-tested directly. The `*-ui.js` files only render, using `textContent` (never `innerHTML`).
+## Limitations
 
-## Changing the rules
+Rule-based and English-focused (plus a few Roman Urdu phrases); links are judged by text only (no reputation, certificate or redirect checks); the password checker has no breach database; the Wi-Fi check uses your answers and cannot detect fake hotspots; the crypto demo is a learning tool. Full list: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
-Everything is a readable table or config object: `URL_CONFIG` (weights, thresholds) in `js/url.js`; `MSG_RULES` and `MSG_CONFIG` in `js/message.js`; `CONFIG` (Wi-Fi points, thresholds, floors, ceilings) in `js/rules.js`; `PW_COMMON` and the scoring in `js/password.js`. After a change, run `npm test`. `tests/demo.test.js` checks every result claimed in the demo script, so it tells you when the script needs updating.
+## Roadmap
 
-Wi-Fi scoring in short: protocol (Open 60, WEP 55, WPA 45, Unknown 35, Enhanced Open 20, WPA2 15, WPA2/WPA3 12, Enterprise 8, WPA3 5) + no password 25 + public network 20 + shared password 15 (only where it applies: WEP, WPA, WPA2, mixed; WPA3 and Enterprise give each device its own keys) + captive portal 5 + location 0-3. Levels: 0-24 Low, 25-59 Medium, 60+ High. Open/WEP/WPA are always High. Unknown security type is at least Medium but held at Medium when a password exists.
+| Idea | Effort | Notes |
+|---|---|---|
+| **Local Wi-Fi agent in Python**: read the real security type and network name from the OS (`netsh wlan` / `nmcli` / `airport`) and feed the Wi-Fi page automatically | Medium | Matches the original proposal's "automatic detection" goal; the agent stays on `127.0.0.1` |
+| **Flask + SQLite backend** for opt-in reporting of scam numbers and links, shared across users | Large | Needs a consent design; keep password checks in the browser; cannot run on GitHub Pages |
+| Full Public Suffix List and a larger brand list (Pakistani banks, telcos, couriers) | Small | Improves link accuracy |
+| Urdu and Roman Urdu message rules, Urdu interface | Medium | Message rules are data, so this is mostly adding entries and tests |
+| Opt-in breach check (k-anonymity range API) | Small | Needs explicit consent and a narrow network exception in the policy |
+| Installable offline app (PWA) and "share to NetSafe" from WhatsApp | Medium | Needs a service worker, which the current audit forbids on purpose |
+| Light theme and settings | Small | |
+| Single-file build (`python tools/bundle.py`) for easy sharing | Small | Optional |
 
-## Documentation
+## Context
 
-- [Security and privacy](docs/SECURITY_AND_PRIVACY.md): data flow, controls, cryptography details, threat model, hosting headers
-- [Known limitations](docs/KNOWN_LIMITATIONS.md)
-- [Demo script](docs/DEMO_SCRIPT.md): realistic synthetic scenarios, each verified by tests
-- [Test results](docs/TEST_RESULTS.md)
-- [Audit and changes](docs/AUDIT_AND_CHANGES.md): what the original project had, what was fixed, and corrections made along the way
-- [Screenshots](docs/screenshots/): desktop and mobile of every module
-
-## Course links
-
-Wireless networks and Wi-Fi security protocols (WEP, WPA, WPA2, WPA3, Enterprise, Enhanced Open); encryption (AES-GCM) and hashing (SHA-256, PBKDF2 in WPA2, SAE in WPA3); HTTPS and TLS; authentication; man-in-the-middle and evil-twin attacks; social engineering and phishing; classic ciphers vs modern encryption.
-
-NetSafe is educational. It is not a penetration-testing tool, a professional security audit, or legal or financial advice.
+Built as a Computer Networks project (wireless security, encryption and hashing, HTTPS/TLS, authentication, phishing and man-in-the-middle attacks) and for SafeSpace Hacks. Educational only: not a penetration-testing tool, a professional security audit, or legal or financial advice.
