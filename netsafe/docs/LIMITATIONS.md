@@ -65,3 +65,9 @@ NetSafe is an educational, rule-based tool. It helps people pause and check; it 
 - Look-alike names (Cyrillic letters, `goog1e`, `rnicrosoft`, brand used as a prefix) are detected and rated High.
 - A link whose visible text differs from its real address is detected only when the copy carries the real address: copying from an email or web page in a computer browser does; SMS and chat apps on phones copy plain text only. Users should use "Copy link address".
 - A genuine address that serves a fake page (a hacked site, or a fake Wi-Fi network redirecting traffic) cannot be detected from the link text. That needs online reputation checks, which NetSafe does not use because they would send the link to a third party.
+
+## Messages from a friend's hacked account
+
+- NetSafe cannot tell that an account was hacked: the message comes from the real number, name and photo. It only recognises the wording patterns these scams use (money with a repay promise, a sudden emergency, "can't talk", payment to someone else's wallet, gift card codes, new-number stories, vote requests, code requests).
+- An opening message such as "Hi, are you free?" has nothing to detect yet. A scammer who writes calmly and copies the person's style can still get a Low or Medium result.
+- A real friend asking for money with the same words gets the same warning. The advice (call them on their usual number first) is right either way.

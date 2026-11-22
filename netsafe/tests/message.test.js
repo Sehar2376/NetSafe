@@ -13,7 +13,7 @@ t('"new number" alone is not flagged', 'This is my new number, save it', r => as
 t('asking for OTP forces High', 'Please share your OTP', r => assert(r.level === 'High' && /code, password or private details/.test(r.floorNote)));
 t('asking for password forces High', 'Please send your password to confirm', r => assert(r.level === 'High' && ids(r).includes('password')));
 t('Roman Urdu OTP + threat', 'Aap ka account band ho jayega foran. Apna OTP bhej dein.', r => assert(r.level === 'High' && ids(r).includes('otp') && ids(r).includes('threat')));
-t('gift card / crypto payment', 'Buy gift cards and send the codes', r => assert(ids(r).includes('payment')));
+t('gift card codes request is its own always-High rule', 'Buy gift cards and send the codes', r => assert(ids(r).includes('gift-card') && r.level === 'High'));
 t('link-only message is Low with link finding', 'Check this https://example.com/page.', r => assert(r.level === 'Low' && ids(r).includes('link') && r.links[0].url === 'https://example.com/page'));
 t('risky link raises level', 'Pay here: http://203.0.113.10/pay', r => assert(r.level !== 'Low' && r.findings.find(f => f.id === 'link').pts === 40));
 t('link is never turned into markup', 'see http://x.example/<script>alert(1)</script>', r => assert(r.segments.every(s => typeof s.text === 'string')));
