@@ -2,9 +2,3 @@ __pycache__/
 *.pyc
 node_modules/
 .DS_Store
-# regenerate with: python3 tests/browser/browser_tests.py --screenshots docs/screenshots
-docs/screenshots/*
-!docs/screenshots/home-desktop.png
-!docs/screenshots/message-desktop.png
-!docs/screenshots/overview-desktop.png
-!docs/screenshots/home-mobile.png
