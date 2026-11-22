@@ -69,6 +69,8 @@
 <section id="link" data-view="link"><p class="kicker">Got a link you are not sure about? Check it before you open it.</p><h1 class="vt">Is this website link safe?</h1>
 <div class="card"><p class="note">NetSafe reads only the text of the link. It never opens it, and nothing you paste is stored or sent anywhere. Use the examples to try it with made-up links.</p>
 <form id="urlForm" novalidate><label for="urlIn">Paste a link</label><input id="urlIn" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="e.g. https://example.com/login" maxlength="2100">
+<p class="note">Copy the real address, not the text you see: long-press the link (phone) or right-click it (computer) and choose <b>Copy link address</b>. A link can show one website and go to another.</p>
+<div id="urlHidden" class="errors" role="status" hidden></div>
 <div class="row"><button class="btn" type="submit">Check link</button><button class="btn ghost" type="button" id="urlClear">Clear</button></div></form>
 <div class="chips" id="urlExamples" role="group" aria-label="Example links (made up)"><span class="note">Try an example:</span></div>
 <div id="urlErr" class="errors" role="alert" hidden></div></div>

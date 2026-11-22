@@ -14,8 +14,8 @@ People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, 
 
 | Page | What it does |
 |---|---|
-| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats of violence or kidnapping, blackmail, "sent by mistake" refunds, task jobs, investment offers, fake BISP/e-challan/PTA/FBR notices, remote-access apps, WhatsApp code theft, account threats, fake prizes, urgency, "new number" scams, risky links, sender clues) and highlights each phrase |
-| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, free hosting pages (pages.dev, vercel.app ...), fake government names, brands on other domains (including Pakistani banks, couriers and offices), and more |
+| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats of violence or kidnapping, blackmail, "sent by mistake" refunds, task jobs, investment offers, fake BISP/e-challan/PTA/FBR notices, remote-access apps, WhatsApp code theft, account threats, fake prizes, urgency, "Hi mum, new number" scams, hacked-friend money requests (repay promises, sudden emergencies, "can't talk", payment to another person's wallet), gift card code requests, "vote for my child" and "is this you?" account-theft lures, links that show one site but go to another, risky links, sender clues) and highlights each phrase |
+| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, free hosting pages (pages.dev, vercel.app ...), fake government names, brands on other domains (including Pakistani banks, couriers and offices), and hidden links: when a link copied from an email shows one website but really goes to another, NetSafe finds the real address and warns |
 | **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps and the latest NordPass lists), phone, CNIC and birth-date passwords, keyboard and counting patterns, repeats, famous phrases and reuse |
 | **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page), plus "free" hotspot names and factory router names. Public Wi-Fi is not automatically rated dangerous |
 | **Overview** | Everything you checked: Assessed, Not assessed or Information unavailable, a prioritised plan, and a downloadable or printable report. No combined score |
@@ -110,7 +110,7 @@ No backend, accounts, analytics or third-party code. Fonts (Atkinson Hyperlegibl
 
 ## Limitations
 
-Rule-based and English-focused (plus a few Roman Urdu phrases); links are judged by text only (no reputation, certificate or redirect checks); the password checker has no breach database; the Wi-Fi check uses your answers and cannot detect fake hotspots; the crypto demo is a learning tool. Full list: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+Rule-based and English-focused (plus a few Roman Urdu phrases); links are judged by text only (no reputation, certificate or redirect checks), so a hacked real site or a new scam site that copies no known name is not detected; hidden-link detection needs a copy from an email or web page in a computer browser (SMS and chat apps copy plain text only); the password checker has no breach database; the Wi-Fi check uses your answers and cannot detect fake hotspots; the crypto demo is a learning tool. Full list: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
 ## Roadmap
 
