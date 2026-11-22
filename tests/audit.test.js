@@ -22,7 +22,7 @@ const ext = (html.match(/(?:src|href)\s*=\s*"(https?:)?\/\/[^"]+"/gi) || []); as
 const scripts = [...html.matchAll(/<script src="([^"]+)"/g)].map(m => m[1]); scripts.forEach(s => assert(fs.existsSync(path.join(root, s)), 'missing ' + s));
 files.forEach(f => assert(scripts.includes('js/' + f), f + ' is not loaded by index.html (dead file)')); console.log('PASS every script file is loaded by index.html and every loaded script exists');
 assert(/id="boot"/.test(html) && /python serve\.py/.test(html)); console.log('PASS a visible banner explains what to do if the scripts do not run (hidden by nav.js once everything loaded)');
-const css = fs.readFileSync(path.join(root, 'css', 'style.css'), 'utf8'); assert(!/url\(\s*['"]?https?:/i.test(css) && !/@import/i.test(css) && !/@font-face/.test(css)); console.log('PASS CSS loads nothing external (no @import, no remote url(), no web fonts)');
+const css = fs.readFileSync(path.join(root, 'css', 'style.css'), 'utf8'); assert(!/url\(\s*['"]?(https?:)?\/\//i.test(css) && !/@import/i.test(css) && [...css.matchAll(/url\(\s*['"]?([^'")]+)/g)].every(m => /^\.\.\/assets\/fonts\/[\w.-]+\.woff2$/.test(m[1]) && fs.existsSync(path.join(root, 'css', m[1])))); console.log('PASS CSS loads nothing external: no @import, no remote url(), fonts only from assets/fonts and present');
 console.log('Audit tests passed');
 // Deploy checks (Netlify and other Linux hosts are case-sensitive; a wrong letter case gives a 404 and every tool stops)
 { const srcs = [...html.matchAll(/<script\s+src="([^"]+)"/g)].map(m => m[1]);

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' file:; style-src 'self' file:; img-src 'self' file:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' file:; style-src 'self' file:; img-src 'self' file:; font-src 'self' file:; base-uri 'none'; form-action 'none'">
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png"><link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
 <title>NetSafe - Personal Internet Safety Assistant</title><link rel="stylesheet" href="css/style.css"></head>
 <body>
@@ -8,11 +8,17 @@
 <header class="nav"><a class="brand" href="#home" aria-label="NetSafe home"><img src="assets/images/netsafe-symbol.png" alt="" width="34" height="34"><span>Net<span>Safe</span></span></a>
 <nav aria-label="Main"><a href="#home">Home</a><a href="#message">Check a message</a><a href="#link">Check a link</a><a href="#password">Password</a><a href="#wifi">Wi-Fi</a><a href="#overview">Overview</a><a href="#lab">Crypto Lab</a><a href="#learn">Learn</a></nav></header>
 <main id="top">
-<section class="hero" data-view="home"><h1>Check it before you click, reply or connect.</h1>
+<section class="hero" data-view="home"><div class="hero-grid"><div class="hero-copy"><h1>Check it before you click, reply or connect.</h1>
 <p class="lead">NetSafe is a free, private safety assistant for everyday internet situations. Paste a message or a link, test a password, or describe a Wi-Fi network, and it tells you in plain English whether to be careful, why, and exactly what to do next.</p>
-<div class="row"><a class="btn" href="#message">Check a message</a><a class="btn ghost" href="#link">Check a link</a></div></section>
+<div class="row"><a class="btn" href="#message">Check a message</a><a class="btn ghost" href="#link">Check a link</a></div>
+<p class="hero-trust">Runs on your device. Nothing you type is stored or sent.</p></div>
+<figure class="demo" aria-label="Example: NetSafe marks the warning phrases in a made-up bank SMS and rates it High">
+<div class="phone"><p class="sms-from">SMS from +92 300 0000000</p>
+<p class="sms">HBL Alert: Your account <mark>will be blocked</mark><sup>3</sup> <mark>within 24 hours</mark><sup>4</sup>. <mark>Verify your CNIC and OTP</mark><sup>1</sup> now at <mark>hbl-verify.example/login</mark><sup>2</sup></p></div>
+<div class="verdict"><p class="verdict-level">High scam warning level</p><p class="verdict-step">Never share an OTP or PIN, even with someone who says they are your bank.</p></div>
+<figcaption>What NetSafe shows for a made-up bank SMS.</figcaption></figure></div></section>
 <section id="why" data-view="home"><p class="kicker">The purpose of this project</p><h2 class="vt">What is NetSafe for?</h2>
-<div class="grid3">
+<div class="grid3 plain">
 <div class="card"><b>The problem</b><p>Every day people get fake bank SMS messages, suspicious links and unfamiliar Wi-Fi networks. Words like OTP, HTTPS or WPA2 are confusing, so many people simply guess, and guessing wrong can cost money or accounts.</p></div>
 <div class="card"><b>Our objective</b><p>Help ordinary people make a safer decision in four everyday situations: understand the warning signs in plain English, and know exactly what to do next, even if they already clicked or replied.</p></div>
 <div class="card"><b>Who it is for</b><p>Anyone who uses the internet: students, families, shop owners. No technical knowledge needed. Everything runs on your own device, and nothing you type is stored or sent.</p></div>
@@ -21,20 +27,20 @@
 <ul class="outcomes"><li>Tell whether a message, link, password or Wi-Fi network deserves your trust, and why.</li><li>Spot the specific warning signs that scammers rely on.</li><li>Know what to do right now, including what to do if you already clicked or replied.</li><li>Understand the security ideas behind it (encryption, HTTPS, WPA3) through hands-on demos.</li></ul></section>
 <section id="start" data-view="home"><p class="kicker">Pick a situation</p><h2 class="vt">What would you like to check?</h2>
 <div class="ovgrid">
-<div class="card startcard"><h3>Got a suspicious message?</h3><p>A WhatsApp, SMS or email asking for an OTP, money or a password.</p><a class="btn" href="#message">Check a message</a></div>
-<div class="card startcard"><h3>Not sure about a link?</h3><p>See whether a web address looks fake, without opening it.</p><a class="btn" href="#link">Check a link</a></div>
-<div class="card startcard"><h3>Is your password strong?</h3><p>Test a made-up password and learn how to make it better.</p><a class="btn" href="#password">Check a password</a></div>
-<div class="card startcard"><h3>Using public Wi-Fi?</h3><p>Find out how risky a network is and what is reasonable to do on it.</p><a class="btn" href="#wifi">Assess a network</a></div>
+<div class="card startcard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg><h3>Got a suspicious message?</h3><p>A WhatsApp, SMS or email asking for an OTP, money or a password.</p><a class="btn" href="#message">Check a message</a></div>
+<div class="card startcard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg><h3>Not sure about a link?</h3><p>See whether a web address looks fake, without opening it.</p><a class="btn" href="#link">Check a link</a></div>
+<div class="card startcard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l2 2M14 9l2 2"/></svg><h3>Is your password strong?</h3><p>Test a made-up password and learn how to make it better.</p><a class="btn" href="#password">Check a password</a></div>
+<div class="card startcard"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9a13 13 0 0 1 18 0M6 12.5a8.5 8.5 0 0 1 12 0M9 16a4 4 0 0 1 6 0"/><circle cx="12" cy="19" r="1"/></svg><h3>Using public Wi-Fi?</h3><p>Find out how risky a network is and what is reasonable to do on it.</p><a class="btn" href="#wifi">Assess a network</a></div>
 </div>
 <p class="note">Also: see everything you have checked in your <a href="#overview">Overview</a>, try real encryption in the <a href="#lab">Crypto Lab</a>, or read the <a href="#learn">Learn</a> glossary.</p></section>
 
 <section id="how" data-view="home">
 <p class="kicker">How NetSafe turns warning signs into advice.</p>
 <h2 class="vt">How it works</h2>
-<div class="grid3">
-<div class="card"><b>1. Choose what to check</b><p>A link, a message, a password or a Wi-Fi network. Paste or describe it. Nothing leaves your device.</p></div>
-<div class="card"><b>2. See why</b><p>Transparent rules (not AI) find warning signs. Each one is explained: what we noticed, why it matters and what could happen.</p></div>
-<div class="card"><b>3. Know what to do</b><p>Get clear next steps, including what to do if you already clicked or replied. Your overview shows what you have and have not checked.</p></div>
+<div class="grid3 steps">
+<div class="card"><b>Choose what to check</b><p>A link, a message, a password or a Wi-Fi network. Paste or describe it. Nothing leaves your device.</p></div>
+<div class="card"><b>See why</b><p>Transparent rules (not AI) find warning signs. Each one is explained: what we noticed, why it matters and what could happen.</p></div>
+<div class="card"><b>Know what to do</b><p>Get clear next steps, including what to do if you already clicked or replied. Your overview shows what you have and have not checked.</p></div>
 </div>
 <p class="note">NetSafe is an educational, rule-based tool. It cannot guarantee that anything is safe, and it never opens links or scans networks.</p>
 <p class="note">Computer Networks ideas it puts into practice: Wi-Fi security protocols, encryption and hashing, HTTPS/TLS, authentication, phishing and man-in-the-middle attacks.</p>

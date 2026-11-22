@@ -156,3 +156,129 @@ table.rules td:nth-child(2){white-space:nowrap}
 .bootdetails p{margin:0 0 4px;font-weight:700}
 .bootdetails ul{margin:0;padding-left:20px}
 .bootdetails li{overflow-wrap:anywhere}
+
+/* ===================================================================================================
+   Design layer (November 2026). Night-blue and signal cyan from the logo; red, amber and green kept for
+   verdicts only. Atkinson Hyperlegible (Braille Institute, built for readability) for text, Bricolage
+   Grotesque for headlines. Both are self-hosted under assets/fonts (SIL Open Font License), so the page
+   still makes no outside requests.
+   =================================================================================================== */
+@font-face{font-family:"Atkinson Hyperlegible";src:url("../assets/fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible";src:url("../assets/fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"Bricolage Grotesque";src:url("../assets/fonts/bricolage-grotesque-latin-wght-normal.woff2") format("woff2");font-weight:200 800;font-style:normal;font-display:swap}
+
+:root{--bg:#0c1626;--card:#122039;--card2:#162845;--line:#26395a;--tx:#eef3fa;--mu:#b6c4da;--dim:#9aabc6;--ac:#38bdf8;--ac2:#7dd3fc;--ink:#08101d;
+  --rad:18px;--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--text:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
+body{font:17px/1.62 var(--text);background:
+  radial-gradient(900px 520px at 88% -6%,#0f3b6a66,transparent 70%),
+  radial-gradient(700px 420px at -10% 40%,#0b2d5233,transparent 70%),var(--bg)}
+h1,h2,h3,.vt,.tag,.brand,.badge{font-family:var(--display)}
+h1{font-weight:800;font-size:clamp(2.3rem,6vw,4rem);line-height:1.02;letter-spacing:-.035em;margin:0 0 20px;max-width:14ch;font-variation-settings:"wdth" 92}
+.vt{font-weight:750;font-size:clamp(1.6rem,3.4vw,2.2rem);letter-spacing:-.025em;line-height:1.12;margin:0 0 22px}
+h2{font-weight:700;font-size:1.12rem;letter-spacing:-.01em}h3{font-weight:700;letter-spacing:-.01em}
+.kicker{text-transform:none;letter-spacing:0;font-size:.95rem;font-weight:700;color:var(--ac2);margin:0 0 4px}
+.lead{font-size:1.12rem;line-height:1.6;max-width:52ch;color:var(--mu)}
+
+/* Header */
+/* wider header so the logo and all eight links fit on one line */
+.nav{padding-left:max(4%,calc((100% - 1160px)/2));padding-right:max(4%,calc((100% - 1160px)/2));background:#0c1626e6;border-bottom-color:#1e3050;backdrop-filter:blur(10px) saturate(1.2)}
+.brand{font-size:1.32rem;font-weight:800;letter-spacing:-.03em}
+nav a{font-size:.93rem;color:var(--mu);border-radius:999px;padding:0 11px}
+nav{gap:2px 4px}
+nav a:hover{color:var(--tx);background:#ffffff0d}
+.nav nav a[aria-current="page"]{color:var(--ink);background:var(--ac);box-shadow:none;font-weight:700}
+
+/* Buttons */
+.btn{border-radius:12px;padding:12px 22px;font-weight:700;letter-spacing:.005em;box-shadow:0 1px 0 #ffffff40 inset,0 8px 24px -10px #38bdf8aa;transition:transform .15s ease,box-shadow .15s ease,filter .15s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{box-shadow:none;border:1.5px solid var(--line);background:#ffffff06}
+.btn.ghost:hover{border-color:var(--ac);background:#38bdf812}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Hero: the product at work */
+.hero{padding-top:clamp(40px,8vw,88px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(28px,5vw,64px);align-items:center}
+.hero .lead{margin-bottom:26px}
+.hero-trust{margin:18px 0 0;color:var(--dim);font-size:.95rem;display:flex;align-items:center;gap:8px}
+.hero-trust::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 0 4px #34d39926;flex:none}
+.demo{margin:0;position:relative}
+.demo::before{content:"";position:absolute;inset:-30px -20px;background:radial-gradient(closest-side,#38bdf82e,transparent);z-index:-1}
+.phone{background:linear-gradient(170deg,#1a2e4f,#122039);border:1px solid #2f4870;border-radius:26px;padding:24px 22px 40px;box-shadow:0 30px 60px -28px #000c,0 0 0 6px #ffffff05;transform:rotate(-1.5deg)}
+.sms-from{margin:0 0 10px;font-size:.85rem;color:var(--dim);font-weight:700}
+.sms{margin:0;background:#22365a;color:var(--tx);border-radius:18px 18px 18px 6px;padding:16px 18px;line-height:1.9;font-size:1.06rem}
+.sms mark{background:#fbbf2429;color:inherit;border-radius:4px;padding:1px 3px;text-decoration:underline wavy var(--a);text-underline-offset:5px;text-decoration-thickness:1.5px}
+.sms sup{color:var(--a);font-weight:700;font-size:.7em;margin-left:2px}
+.verdict{position:relative;margin:-14px 18px 0 auto;max-width:86%;background:#2a1418;border:1.5px solid var(--r);border-radius:16px;padding:14px 16px;box-shadow:0 20px 40px -20px #000d;transform:rotate(1deg)}
+.verdict p{margin:0}
+.verdict-level{font-family:var(--display);font-weight:800;color:#fca5a5;font-size:1.2rem;letter-spacing:-.01em}
+.verdict-step{color:#fde2e2;font-size:.95rem;margin-top:4px!important}
+.demo figcaption{margin:14px 4px 0;color:var(--dim);font-size:.88rem;text-align:right}
+@media(prefers-reduced-motion:no-preference){
+  .phone{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .verdict{animation:stamp .5s .65s cubic-bezier(.3,1.4,.5,1) both}
+  .sms mark{animation:mark .5s both}.sms mark:nth-of-type(1){animation-delay:.35s}.sms mark:nth-of-type(2){animation-delay:.42s}.sms mark:nth-of-type(3){animation-delay:.49s}.sms mark:nth-of-type(4){animation-delay:.56s}
+}
+@keyframes rise{from{opacity:0;transform:translateY(16px) rotate(-1.5deg)}to{opacity:1;transform:translateY(0) rotate(-1.5deg)}}
+@keyframes stamp{from{opacity:0;transform:scale(1.15) rotate(4deg)}to{opacity:1;transform:scale(1) rotate(1deg)}}
+@keyframes mark{from{background:transparent;text-decoration-color:transparent}}
+
+/* Cards: hierarchy instead of one card for everything */
+.card{background:linear-gradient(165deg,var(--card2),var(--card));border-color:var(--line);border-radius:var(--rad);box-shadow:0 1px 0 #ffffff0a inset,0 18px 40px -24px #000a}
+.grid3.plain{gap:28px}
+.grid3.plain .card{background:none;border:0;border-top:2px solid var(--line);border-radius:0;box-shadow:none;padding:16px 0 0}
+.grid3.plain b{font-family:var(--display);font-size:1.15rem;color:var(--tx)}
+.grid3.steps{counter-reset:step;gap:16px}
+.grid3.steps .card{position:relative;padding-top:58px}
+.grid3.steps .card::before{counter-increment:step;content:counter(step);position:absolute;top:16px;left:clamp(16px,3vw,24px);width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--ac);color:var(--ink);font:800 1rem var(--display)}
+.grid3.steps b{color:var(--tx);font-family:var(--display);font-size:1.1rem}
+.outcomes{padding-left:0;list-style:none}
+.outcomes li{position:relative;padding-left:30px}
+.outcomes li::before{content:"";position:absolute;left:2px;top:.45em;width:14px;height:8px;border-left:2.5px solid var(--g);border-bottom:2.5px solid var(--g);transform:rotate(-45deg)}
+
+/* Start tiles */
+.startcard{padding:26px 24px 24px;gap:10px;transition:border-color .2s,transform .2s}
+.startcard:hover{border-color:#3b5784;transform:translateY(-2px)}
+.ico{width:44px;height:44px;padding:10px;border-radius:14px;background:#38bdf81a;stroke:var(--ac2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:4px}
+.startcard h3{font-size:1.22rem}
+
+/* Tool pages */
+input[type=text],input:not([type]),input[type=number],input[type=password],select,textarea{background:var(--ink);border:1.5px solid var(--line);border-radius:12px}
+input:focus,select:focus,textarea:focus,input[type=password]:focus{border-color:var(--ac);outline:3px solid #38bdf855;outline-offset:1px}
+label{color:var(--mu);font-weight:700}
+.chip{border:1.5px solid var(--line);background:#ffffff05}
+.chip:hover{border-color:var(--ac);background:#38bdf812}
+.tag{font-weight:800;font-size:clamp(1.5rem,3vw,1.9rem);letter-spacing:-.025em}
+.brief{font-size:1.08rem}
+.finding{border-radius:14px;background:#08101d80;padding:14px 16px}
+.todo{border-radius:14px;background:#38bdf814;border-color:#38bdf880}
+.msgbox,.urlparts,pre{background:var(--ink);border-radius:12px}
+.badge{font-weight:800;border-width:7px;box-shadow:0 0 30px -6px currentColor inset}
+.pill{border-width:1.5px}
+details.help,details.plan{border-radius:14px}
+
+/* Footer */
+footer{border-top-color:#1e3050}
+.ft-logo img{border-radius:16px}
+
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:1fr}
+  h1{max-width:16ch}
+  .phone{transform:none}.verdict{transform:none;margin-right:10px}
+  @media(prefers-reduced-motion:no-preference){@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}@keyframes stamp{from{opacity:0;transform:scale(1.1)}to{opacity:1;transform:none}}}
+}
+@media(max-width:600px){
+  body{font-size:16px}
+  nav a{padding:0 10px}
+  .nav nav a[aria-current="page"]{border-radius:999px}
+  .grid3.plain{gap:18px}
+  .demo figcaption{text-align:left}
+}
+@media print{.hero-grid,.demo{display:none!important}h1,h2,h3,.vt,.tag{font-family:Georgia,serif}}
+@media(max-width:600px){.nav nav{gap:0 4px}.nav nav a{padding:0 12px}.hero-trust{align-items:flex-start}.hero-trust::before{margin-top:.45em}}
+@media(max-width:860px){.demo::before{inset:-20px 0}}
+@media print{
+  :root{--bg:#fff;--card:#fff;--card2:#fff;--tx:#000;--mu:#222;--dim:#333;--line:#888;--ac:#0b4f78;--g:#0a6b3a;--a:#7a5200;--r:#a01818;--ink:#fff}
+  body{background:#fff!important;color:#000;font-family:Georgia,serif}
+  .card{box-shadow:none!important}
+}

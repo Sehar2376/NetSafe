@@ -50,7 +50,8 @@
   }
   function run() {
     err.hidden = true; err.textContent = '';
-    const r = NetSafeMessage.analyzeMessage(input.value, { sender: sender.value, channel: channel.value });
+    let r;
+    try { r = NetSafeMessage.analyzeMessage(input.value, { sender: sender.value, channel: channel.value }); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this message, so it was not checked. If it asks for money, codes or details, verify it through an official channel.'] }; }
     if (!r.ok) { err.hidden = false; err.append(el('b', null, 'Please check: '), document.createTextNode(r.errors.join(' '))); empty(); return; }
     render(r); NetSafeOverview.record('message', r);
     out.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });

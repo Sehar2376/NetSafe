@@ -48,7 +48,8 @@
   }
   function run() {
     err.hidden = true; err.textContent = '';
-    const r = NetSafeUrl.analyzeUrl(input.value);
+    let r;
+    try { r = NetSafeUrl.analyzeUrl(input.value); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this link, so it was not checked. Do not open it if you are unsure.'] }; }
     if (!r.ok) { err.hidden = false; err.append(el('b', null, 'Please check: '), document.createTextNode(r.errors.join(' '))); out.textContent = ''; out.append(el('p', 'note empty', 'No link checked yet. Results appear here.')); return; }
     render(r); NetSafeOverview.record('link', r);
     out.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });

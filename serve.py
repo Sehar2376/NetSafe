@@ -29,6 +29,7 @@ MIME_TYPES = {
     '.png': 'image/png',
     '.ico': 'image/x-icon',
     '.svg': 'image/svg+xml',
+    '.woff2': 'font/woff2',
     '.json': 'application/json',
     '.txt': 'text/plain; charset=utf-8',
 }

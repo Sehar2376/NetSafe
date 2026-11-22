@@ -63,6 +63,7 @@ t('courier name on a cheap ending is High', 'https://tcs-delivery.top', r => ass
 for (const ok of ['https://echallan.psca.gop.pk', 'https://8171.bisp.gov.pk', 'https://www.fbr.gov.pk', 'https://www.daraz.pk/products/x', 'https://fonts.googleapis.com/css',
   'https://s3.amazonaws.com/bucket', 'https://login.microsoftonline.com', 'https://static.xx.fbcdn.net/x.png', 'https://www.youtube.com/watch?v=1', 'https://t.me/channel', 'https://docs.github.com'])
   t('real official or service address not flagged: ' + ok, ok, r => assert(r.level === 'Low' && r.findings.length === 0, ok + ' ' + ids(r)));
+t('broken %-code before @ does not crash (found by fuzzing)', 'https://%E0%A4%A@evil.example', r => assert(r.ok && ids(r).includes('userinfo')));
 { const { URL_SIGNALS, URL_CONFIG } = require('../js/url.js'); const keys = Object.keys(URL_CONFIG.pts);
   assert.deepStrictEqual(URL_SIGNALS.map(s => s.key).sort(), keys.slice().sort()); console.log('PASS the signal table covers every weighted signal exactly once');
   for (const s of URL_SIGNALS) { const f = analyzeUrl(s.example).findings.find(x => x.id === s.id); assert(f, s.id + ' not triggered by ' + s.example); assert.strictEqual(f.pts, URL_CONFIG.pts[s.key], s.id + ' points differ'); } console.log('PASS every documented link signal is triggered by its example, with the documented points'); }

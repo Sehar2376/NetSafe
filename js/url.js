@@ -95,6 +95,8 @@ function registeredDomain(labels) {
 const IPV4 = /^\d{1,3}(\.\d{1,3}){3}$/;
 const isPrivateIp = h => /^(10\.|127\.|192\.168\.|169\.254\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h);
 const scriptsOf = s => ['Latin', 'Cyrillic', 'Greek'].filter(x => new RegExp('\\p{Script=' + x + '}', 'u').test(s));
+// decodeURIComponent throws on broken %-codes ("%E0%A4%A"); a link checker must never crash on hostile input.
+const safeDecode = s => { try { return decodeURIComponent(s); } catch (e) { return s; } };
 const leet = s => s.replace(/0/g, 'o').replace(/1/g, 'l').replace(/3/g, 'e').replace(/5/g, 's');
 // Letters from other alphabets that look like Latin letters (small, incomplete list), used to compare names with brands.
 const CONFUSABLE = { 'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p', 'с': 'c', 'у': 'y', 'х': 'x', 'і': 'i', 'ј': 'j', 'ӏ': 'l',
@@ -179,7 +181,7 @@ function analyzeUrl(raw) {
       'Do not log in through this link. Go to the service by typing its official address yourself.');
   }
   // 3. Text before @ (userinfo trick)
-  if (u.username || u.password) add('userinfo', URL_CONFIG.pts.userinfo, 'Misleading "@" in the link', 'Text before the @ ("' + decodeURIComponent(u.username).slice(0, 40) + '") is ignored. The link really goes to ' + host + '.',
+  if (u.username || u.password) add('userinfo', URL_CONFIG.pts.userinfo, 'Misleading "@" in the link', 'Text before the @ ("' + safeDecode(u.username).slice(0, 40) + '") is ignored. The link really goes to ' + host + '.',
     'Attackers put a trusted name first so the link looks like it goes there.', 'You might think you are on a trusted site when you are not.',
     'Look only at the part after the @. Do not open the link unless you recognise that site.');
   // 4. Punycode and look-alike characters

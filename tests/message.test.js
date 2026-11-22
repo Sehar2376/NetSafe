@@ -57,6 +57,7 @@ t('past tense and misspelled money is a payment request', 'sent us moeny now', r
 t('amount in thousands (1000k) is a payment request', 'send 1000k today', r => assert(ids(r).includes('payment')));
 for (const ok of ['This movie will kill it at the box office', 'I am going to beat the traffic, see you soon', 'Your son is with us at the park, come pick him up at 5', 'I need money for books', 'Kill the lights when you leave', 'I will beat you at chess tonight', 'The ransomware article was interesting'])
   t('everyday wording not flagged as a threat: ' + ok, ok, r => assert(!ids(r).includes('extortion') && !ids(r).includes('held'), ok + ' ' + ids(r)));
+t('message with a broken %-code link does not crash (found by fuzzing)', 'Login here https://%E0%A4%A@evil.example now', r => assert(r.ok && ids(r).includes('link')));
 // The examples shown on the Learn page must really trigger their rule
 { for (const r of require('../js/message.js').MSG_RULES) { assert(r.examples.length >= 2, r.id + ' needs examples'); for (const ex of r.examples) assert(r.re.some(re => [...ex.matchAll(re)].length > 0), r.id + ' does not match its own example: ' + ex); } console.log('PASS every message rule matches each of its documented examples'); }
 console.log('Message rule-example tests passed');

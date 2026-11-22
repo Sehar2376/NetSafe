@@ -100,13 +100,13 @@ pip install playwright && playwright install chromium
 python tests/browser/browser_tests.py                  # real-browser tests, about 2 minutes (--only nav,overview for a subset)
 ```
 
-Last full run (Node 22, Python 3.13, Chromium 157): **617** unit checks (including a 246-scenario real-world sweep), **15** server tests, **198** browser checks, all passed. Firefox and Safari were not run.
+Last full run (Node 22, Python 3.13, Chromium 157): **619** unit checks (including a 246-scenario real-world sweep), **15** server tests, **198** browser checks, all passed. Firefox and Safari were not run.
 
 Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; look-alike domains and their false positives; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; correct content types even with a broken system MIME table; page navigation; real button clicks and keyboard use on every page; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
 
 ## Privacy and security
 
-No backend, accounts, analytics or third-party code. A strict Content-Security-Policy blocks everything except the app's own files, so the page cannot send data out. All text is rendered with `textContent`. The AES demo uses only Web Crypto (PBKDF2 and AES-GCM). Full details and threat model: [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
+No backend, accounts, analytics or third-party code. Fonts (Atkinson Hyperlegible and Bricolage Grotesque, SIL Open Font License) are stored in `assets/fonts`, so even typography loads from the site itself. A strict Content-Security-Policy blocks everything except the app's own files, so the page cannot send data out. All text is rendered with `textContent`. The AES demo uses only Web Crypto (PBKDF2 and AES-GCM). Full details and threat model: [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
 
 ## Limitations
 
