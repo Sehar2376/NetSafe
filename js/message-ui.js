@@ -13,8 +13,14 @@
     ['Normal message', 'Hi, are we still meeting at 6? I will bring the notes.']
   ];
   const input = $('#msgIn'), out = $('#msgResult'), err = $('#msgErr'), sender = $('#msgSender'), channel = $('#msgChannel');
+  // Links copied from an email keep their real address in the clipboard's HTML. Remember them so a link that
+  // shows one website but goes to another can be flagged. Only links whose text is still in the box are used.
+  let pastedLinks = [];
+  input.addEventListener('paste', e => {
+    try { pastedLinks = pastedLinks.concat(NetSafeUrl.linksFromHtml(e.clipboardData && e.clipboardData.getData('text/html'))).slice(-50); } catch (x) { /* plain-text paste */ }
+  });
   const empty = () => { out.textContent = ''; out.append(el('p', 'note empty', 'No message checked yet. Results appear here.')); };
-  EXAMPLES.forEach(([label, text]) => { const b = el('button', 'chip', label); b.type = 'button'; b.addEventListener('click', () => { input.value = text; sender.value = ''; channel.value = ''; run(); }); $('#msgExamples').append(b); });
+  EXAMPLES.forEach(([label, text]) => { const b = el('button', 'chip', label); b.type = 'button'; b.addEventListener('click', () => { pastedLinks = []; input.value = text; sender.value = ''; channel.value = ''; run(); }); $('#msgExamples').append(b); });
   const list = items => { const ul = el('ul'); items.forEach(t => ul.append(el('li', null, t))); return ul; };
 
   function render(r) {
@@ -51,11 +57,11 @@
   function run() {
     err.hidden = true; err.textContent = '';
     let r;
-    try { r = NetSafeMessage.analyzeMessage(input.value, { sender: sender.value, channel: channel.value }); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this message, so it was not checked. If it asks for money, codes or details, verify it through an official channel.'] }; }
+    try { r = NetSafeMessage.analyzeMessage(input.value, { sender: sender.value, channel: channel.value, hiddenLinks: pastedLinks }); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this message, so it was not checked. If it asks for money, codes or details, verify it through an official channel.'] }; }
     if (!r.ok) { err.hidden = false; err.append(el('b', null, 'Please check: '), document.createTextNode(r.errors.join(' '))); empty(); return; }
     render(r); NetSafeOverview.record('message', r);
     out.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
   $('#msgForm').addEventListener('submit', e => { e.preventDefault(); run(); });
-  $('#msgClear').addEventListener('click', () => { input.value = ''; sender.value = ''; channel.value = ''; err.hidden = true; empty(); input.focus(); });
+  $('#msgClear').addEventListener('click', () => { pastedLinks = []; input.value = ''; sender.value = ''; channel.value = ''; err.hidden = true; empty(); input.focus(); });
 })();

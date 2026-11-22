@@ -10,8 +10,23 @@
     ['Look-alike letters', 'https://xn--pypal-4ve.example'],
     ['Short link', 'https://bit.ly/3AbCdEf']
   ];
-  const input = $('#urlIn'), out = $('#urlResult'), err = $('#urlErr');
-  EXAMPLES.forEach(([label, url]) => { const b = el('button', 'chip', label); b.type = 'button'; b.addEventListener('click', () => { input.value = url; run(); }); $('#urlExamples').append(b); });
+  const input = $('#urlIn'), out = $('#urlResult'), err = $('#urlErr'), hiddenNote = $('#urlHidden');
+  let shownAs = '';   // text the link displayed where it was copied from, when that differs from the real address
+  const clearHidden = () => { shownAs = ''; hiddenNote.hidden = true; hiddenNote.textContent = ''; };
+  input.addEventListener('paste', e => {
+    clearHidden();
+    let links = [];
+    try { links = NetSafeUrl.linksFromHtml(e.clipboardData && e.clipboardData.getData('text/html')); } catch (x) { links = []; }
+    const hit = links.map(l => ({ l, m: NetSafeUrl.compareLinkText(l.text, l.href) })).find(x => x.m);
+    if (!hit) return;
+    e.preventDefault();
+    input.value = hit.m.realHost ? hit.l.href : hit.l.text;
+    shownAs = hit.l.text;
+    hiddenNote.hidden = false;
+    hiddenNote.append(el('b', null, 'Hidden address found: '), document.createTextNode('the link you copied shows "' + hit.l.text + '", but it really goes to ' + hit.m.realDomain + '. NetSafe put the real address in the box.'));
+  });
+  input.addEventListener('input', clearHidden);
+  EXAMPLES.forEach(([label, url]) => { const b = el('button', 'chip', label); b.type = 'button'; b.addEventListener('click', () => { clearHidden(); input.value = url; run(); }); $('#urlExamples').append(b); });
 
   function list(items) { const ul = el('ul'); items.forEach(t => ul.append(el('li', null, t))); return ul; }
   function render(r) {
@@ -49,11 +64,11 @@
   function run() {
     err.hidden = true; err.textContent = '';
     let r;
-    try { r = NetSafeUrl.analyzeUrl(input.value); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this link, so it was not checked. Do not open it if you are unsure.'] }; }
+    try { r = NetSafeUrl.analyzeUrl(input.value, { shownAs }); } catch (e) { r = { ok: false, errors: ['NetSafe could not read this link, so it was not checked. Do not open it if you are unsure.'] }; }
     if (!r.ok) { err.hidden = false; err.append(el('b', null, 'Please check: '), document.createTextNode(r.errors.join(' '))); out.textContent = ''; out.append(el('p', 'note empty', 'No link checked yet. Results appear here.')); return; }
     render(r); NetSafeOverview.record('link', r);
     out.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }
   $('#urlForm').addEventListener('submit', e => { e.preventDefault(); run(); });
-  $('#urlClear').addEventListener('click', () => { input.value = ''; err.hidden = true; out.textContent = ''; out.append(el('p', 'note empty', 'No link checked yet. Results appear here.')); input.focus(); });
+  $('#urlClear').addEventListener('click', () => { clearHidden(); input.value = ''; err.hidden = true; out.textContent = ''; out.append(el('p', 'note empty', 'No link checked yet. Results appear here.')); input.focus(); });
 })();

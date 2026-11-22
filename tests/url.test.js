@@ -12,7 +12,7 @@ t('userinfo trick', 'https://paypal.com@account-check.example/', r => assert(ids
 t('brand on other domain', 'http://paypal.com.secure-login.example/verify', r => assert(ids(r).includes('brand') && r.level === 'High'));
 t('real brand domain not flagged', 'https://www.paypal.com/signin', r => assert(!ids(r).includes('brand') && !ids(r).includes('keywords')));
 t('real subdomain of brand not flagged', 'https://accounts.google.com/signin', r => assert(r.level === 'Low' && r.findings.length === 0));
-t('leet look-alike brand', 'https://paypa1-secure.top', r => assert(ids(r).includes('brand')));
+t('leet look-alike brand is flagged as a look-alike and High', 'https://paypa1-secure.top', r => assert(ids(r).includes('lookalike') && r.level === 'High'));
 t('regional brand domain ok', 'https://amazon.co.uk/x', r => assert(!ids(r).includes('brand')));
 t('punycode + mixed script', 'https://xn--pypal-4ve.example', r => assert(ids(r).includes('punycode') && ids(r).includes('mixed-script')));
 t('punycode does not trigger hyphen rule', 'https://xn--pypal-4ve.example', r => assert(!ids(r).includes('hyphens')));
@@ -66,6 +66,17 @@ for (const ok of ['https://echallan.psca.gop.pk', 'https://8171.bisp.gov.pk', 'h
 t('broken %-code before @ does not crash (found by fuzzing)', 'https://%E0%A4%A@evil.example', r => assert(r.ok && ids(r).includes('userinfo')));
 { const { URL_SIGNALS, URL_CONFIG } = require('../js/url.js'); const keys = Object.keys(URL_CONFIG.pts);
   assert.deepStrictEqual(URL_SIGNALS.map(s => s.key).sort(), keys.slice().sort()); console.log('PASS the signal table covers every weighted signal exactly once');
-  for (const s of URL_SIGNALS) { const f = analyzeUrl(s.example).findings.find(x => x.id === s.id); assert(f, s.id + ' not triggered by ' + s.example); assert.strictEqual(f.pts, URL_CONFIG.pts[s.key], s.id + ' points differ'); } console.log('PASS every documented link signal is triggered by its example, with the documented points'); }
+  for (const s of URL_SIGNALS) { const f = analyzeUrl(s.example, s.opts).findings.find(x => x.id === s.id); assert(f, s.id + ' not triggered by ' + s.example); assert.strictEqual(f.pts, URL_CONFIG.pts[s.key], s.id + ' points differ'); } console.log('PASS every documented link signal is triggered by its example, with the documented points'); }
 console.log('URL signal tests passed');
 console.log('URL tests passed');
+// Hidden links: the text a link shows vs where it really goes
+{ const { compareLinkText } = require('../js/url.js');
+  assert(compareLinkText('www.google.com', 'https://evil-site.top/login').realDomain === 'evil-site.top'); console.log('PASS link text google.com going to another site is a mismatch');
+  assert.strictEqual(compareLinkText('www.google.com', 'https://www.google.com/search?q=x'), null); console.log('PASS link text matching its real address is not a mismatch');
+  assert.strictEqual(compareLinkText('https://hbl.com', 'https://accounts.hbl.com/x'), null); console.log('PASS a subdomain of the shown site is not a mismatch');
+  assert.strictEqual(compareLinkText('Click here', 'https://evil.top'), null); console.log('PASS ordinary link words are not compared');
+  assert(compareLinkText('google.com', 'javascript:alert(1)').realHost === ''); console.log('PASS a web-address text pointing to javascript: is a mismatch');
+  assert(analyzeUrl('https://evil-site.top/login', { shownAs: 'www.google.com' }).level === 'High'); console.log('PASS checked link that showed google.com is High');
+  assert(!analyzeUrl('https://www.google.com/', { shownAs: 'www.google.com' }).findings.length); console.log('PASS real google.com shown as google.com has no findings');
+  for (const u of ['https://www.goog1e.com/', 'https://www.paypa1.com/', 'https://g00gle.com', 'https://rnicrosoft.com', 'https://www.googIe.com']) { assert.strictEqual(analyzeUrl(u).level, 'High', u); } console.log('PASS look-alike brand names are High');
+}

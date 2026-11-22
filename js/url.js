@@ -4,7 +4,7 @@
 const URL_CONFIG = {
   thresholds: { medium: 15, high: 40 },
   pts: { http: 20, ip: 30, userinfo: 40, punycode: 20, mixedScript: 20, shortener: 20, brand: 35,
-         lookalike: 35, fakeGov: 30, freeHost: 10, deepSub: 10, hyphens: 10, longHost: 10, keywords: 10, tld: 10, port: 10, redirectParam: 10, longUrl: 5, encodedHost: 10, codeLink: 60 },
+         lookalike: 45, hiddenLink: 40, fakeGov: 30, freeHost: 10, deepSub: 10, hyphens: 10, longHost: 10, keywords: 10, tld: 10, port: 10, redirectParam: 10, longUrl: 5, encodedHost: 10, codeLink: 60 },
   maxLength: 2048
 };
 const SHORTENERS = ['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'ow.ly', 'is.gd', 'buff.ly', 'rebrand.ly', 'cutt.ly', 'shorturl.at', 'tiny.cc', 'rb.gy', 't.ly', 's.id', 'v.gd', 'bit.do', 'tiny.one', 'surl.li', 'u.to', 'shorturl.asia', 'short.gy', 'cutt.us'];
@@ -40,6 +40,7 @@ const URL_SIGNALS = [
   { key: 'shortener', id: 'shortener', label: 'Shortened link (destination hidden)', example: 'https://bit.ly/3AbCdEf' },
   { key: 'brand', id: 'brand', label: 'Famous brand name on another website', example: 'https://paypal.com.secure-login.example' },
   { key: 'lookalike', id: 'lookalike', label: 'Name that imitates a famous brand (googIe, paypai, amazom, Cyrillic letters)', example: 'https://googIe.com' },
+  { key: 'hiddenLink', id: 'hidden-link', label: 'Copied link showed a different website (e.g. shows www.google.com)', example: 'https://login-check.example', opts: { shownAs: 'www.google.com' } },
   { key: 'fakeGov', id: 'fake-gov', label: 'Government-looking name on a non-government address', example: 'https://echallan-psca-gop.cc' },
   { key: 'freeHost', id: 'free-host', label: 'Free hosting or app-builder address (pages.dev, vercel.app ...)', example: 'https://hbl-verify.pages.dev' },
   { key: 'deepSub', id: 'deep-sub', label: 'Many subdomains', example: 'https://a.b.c.d.example.com' },
@@ -127,7 +128,7 @@ function lookalikeBrand(label, domain) {
   return '';
 }
 
-function analyzeUrl(raw) {
+function analyzeUrl(raw, opts = {}) {
   const errors = [];
   const input = String(raw == null ? '' : raw).trim();
   if (!input) return { ok: false, errors: ['Paste a link to check.'] };
@@ -207,6 +208,14 @@ function analyzeUrl(raw) {
       const Brand = brand.charAt(0).toUpperCase() + brand.slice(1);
       const hit = tokens.some(t => t === brand || (brand.length >= 5 && t.includes(brand)));
       if (hit && !BRANDS[brand].includes(rd.domain)) {
+        const raw = host.split(/[.-]/).concat(rd.domain.split('.')[0].replace(/-/g, ''));
+        if (!raw.some(t => t === brand || (brand.length >= 5 && t.includes(brand)))) {   // only matched after 0->o, 1->l...: an imitation
+          add('lookalike', URL_CONFIG.pts.lookalike, 'Name imitates "' + Brand + '"', 'The link spells "' + Brand + '" with numbers in place of letters (for example 0 for o, 1 for l), and goes to ' + rd.domain + ', which is not a ' + Brand + ' domain NetSafe knows.',
+            'Scammers register names one letter off, or with look-alike characters, so a quick glance reads the real brand.',
+            'You could be shown a fake ' + Brand + ' page that collects your login or payment details.',
+            'Do not use this link. Open the official ' + Brand + ' app or type its official address yourself.');
+          brandHit = true; break;
+        }
         add('brand', URL_CONFIG.pts.brand, 'Uses the name "' + Brand + '" on a different website', 'The name "' + Brand + '" appears in the link, but the site the link goes to is ' + rd.domain + '.',
           'The real ' + Brand + ' sites are on a different domain. Putting a trusted name in the address is a common way to look genuine.', 'You could be shown a fake page that collects your login or payment details.',
           'Do not use this link. Open the official ' + Brand + ' app or type its official address yourself.');
@@ -239,6 +248,15 @@ function analyzeUrl(raw) {
       'Fake e-challan, tax refund and aid-scheme sites put "gov" or "gop" in the name to look official.', 'You could pay a fake fine or give your CNIC and bank details to criminals.',
       'Do not use this link. Type the official government website yourself, for example psca.gop.pk or bisp.gov.pk.');
   }
+  // 6d. The link was copied from an email or web page where it showed a different website name
+  const shown = opts && opts.shownAs ? String(opts.shownAs).trim().slice(0, 200) : '';
+  if (shown && !isIp) {
+    const m = compareLinkText(shown, (hasScheme ? '' : 'https://') + input);
+    if (m) add('hidden-link', URL_CONFIG.pts.hiddenLink, 'The link showed a different website', 'Where you copied it, the link was shown as "' + shown + '", but it really goes to ' + m.realDomain + '.',
+      'Emails and web pages can show any text for a link. Scammers show a trusted address while the real link goes to their own site. Some newsletters also route links through a tracking site, so check who sent it.',
+      'You could think you are opening ' + m.shownDomain + ' and land on a fake page instead.',
+      'Do not use this link. Type ' + m.shownDomain + ' into your browser yourself, or open the official app.');
+  }
   // 7. Structure
   if (!isIp && rd.sub.length >= 3) add('deep-sub', URL_CONFIG.pts.deepSub, 'Many subdomains', 'There are ' + rd.sub.length + ' extra name parts before ' + rd.domain + '.',
     'Long chains push the real site name out of view. Some legitimate services also use them.', 'The part you recognise may not be the part that decides where you go.', 'Read the name from the right: the last two parts before the first "/" show who runs the site.');
@@ -261,6 +279,34 @@ function analyzeUrl(raw) {
   return finalize({ ...base, scheme, parts, host, domain: rd.domain, schemeMissing: !hasScheme }, findings);
 }
 
+// Compares the text a link shows (for example "www.google.com") with where it really goes (its href).
+// Returns null when they agree or the text is not a web address; otherwise the two registered domains.
+const LINK_TEXT_RE = /^(?:https?:\/\/)?(?:[a-z0-9\u00a1-\uffff-]+\.)+[a-z\u00a1-\uffff]{2,}(?::\d+)?(?:[\/?#]\S*)?$/i;
+function compareLinkText(text, href) {
+  const t = String(text == null ? '' : text).trim().replace(/[.,;:!?)]+$/, '');
+  const h = String(href == null ? '' : href).trim();
+  if (!t || t.length > 200 || !LINK_TEXT_RE.test(t) || !h) return null;
+  const hostOf = s => { try { const u = new URL(/^[a-z][a-z0-9+.-]*:/i.test(s) ? s : 'https://' + s); return /^https?:$/.test(u.protocol) ? u.hostname.replace(/\.$/, '').toLowerCase() : null; } catch (e) { return undefined; } };
+  const sh = hostOf(t); if (!sh) return null;
+  const rh = hostOf(h);
+  const dom = host => IPV4.test(host) || host.startsWith('[') ? host : registeredDomain(host.split('.')).domain;
+  const shownDomain = dom(sh);
+  if (rh === undefined) return null;                    // unreadable href: nothing to compare
+  if (rh === null) return { shownDomain, realDomain: h.split(':')[0].toLowerCase() + ': link (not a website)', realHost: '', realHref: h };
+  const realDomain = dom(rh);
+  return realDomain === shownDomain ? null : { shownDomain, realDomain, realHost: rh, realHref: h };
+}
+
+// Reads the links (shown text + real address) from HTML copied out of an email or web page.
+// DOMParser builds an inert document: scripts do not run and images are not loaded.
+function linksFromHtml(html) {
+  if (!html || typeof DOMParser === 'undefined') return [];
+  const doc = new DOMParser().parseFromString(String(html).slice(0, 200000), 'text/html');
+  return [...doc.querySelectorAll('a[href]')].slice(0, 50)
+    .map(a => ({ text: (a.textContent || '').replace(/\s+/g, ' ').trim(), href: (a.getAttribute('href') || '').trim() }))
+    .filter(l => l.text && l.href);
+}
+
 function finalize(res, findings) {
   const score = Math.min(100, findings.reduce((s, f) => s + f.pts, 0));
   const T = URL_CONFIG.thresholds;
@@ -275,6 +321,7 @@ function finalize(res, findings) {
   if (res.scheme === 'https') notes.push('HTTPS only means the connection is encrypted. Scam sites can use HTTPS too.');
   const prevent = [];
   const ids = findings.map(f => f.id);
+  if (ids.includes('hidden-link')) prevent.push('Before opening a link in an email, hover over it (computer) or long-press it (phone) to see the real address.');
   if (ids.some(i => ['brand', 'lookalike', 'fake-gov', 'free-host', 'punycode', 'mixed-script', 'userinfo', 'keywords'].includes(i))) prevent.push('For banks and online accounts, open the official app or type the address yourself instead of tapping links in messages.');
   if (ids.includes('shortener')) prevent.push('Be wary of shortened links from people you do not know.');
   if (ids.includes('http')) prevent.push('Avoid entering personal information on http:// pages.');
@@ -283,5 +330,5 @@ function finalize(res, findings) {
   return { ...res, score, level, summary, findings, notes, prevent, ifAlready };
 }
 
-const NetSafeUrl = { URL_CONFIG, URL_SIGNALS, BRANDS, analyzeUrl, punyDecode, registeredDomain };
+const NetSafeUrl = { URL_CONFIG, URL_SIGNALS, BRANDS, analyzeUrl, compareLinkText, linksFromHtml, punyDecode, registeredDomain };
 if (typeof module !== 'undefined') module.exports = NetSafeUrl;

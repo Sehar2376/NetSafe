@@ -13,7 +13,7 @@ t('"new number" alone is not flagged', 'This is my new number, save it', r => as
 t('asking for OTP forces High', 'Please share your OTP', r => assert(r.level === 'High' && /code, password or private details/.test(r.floorNote)));
 t('asking for password forces High', 'Please send your password to confirm', r => assert(r.level === 'High' && ids(r).includes('password')));
 t('Roman Urdu OTP + threat', 'Aap ka account band ho jayega foran. Apna OTP bhej dein.', r => assert(r.level === 'High' && ids(r).includes('otp') && ids(r).includes('threat')));
-t('gift card / crypto payment', 'Buy gift cards and send the codes', r => assert(ids(r).includes('payment')));
+t('gift card codes request is its own always-High rule', 'Buy gift cards and send the codes', r => assert(ids(r).includes('gift-card') && r.level === 'High'));
 t('link-only message is Low with link finding', 'Check this https://example.com/page.', r => assert(r.level === 'Low' && ids(r).includes('link') && r.links[0].url === 'https://example.com/page'));
 t('risky link raises level', 'Pay here: http://203.0.113.10/pay', r => assert(r.level !== 'Low' && r.findings.find(f => f.id === 'link').pts === 40));
 t('link is never turned into markup', 'see http://x.example/<script>alert(1)</script>', r => assert(r.segments.every(s => typeof s.text === 'string')));
@@ -62,3 +62,11 @@ t('message with a broken %-code link does not crash (found by fuzzing)', 'Login 
 { for (const r of require('../js/message.js').MSG_RULES) { assert(r.examples.length >= 2, r.id + ' needs examples'); for (const ex of r.examples) assert(r.re.some(re => [...ex.matchAll(re)].length > 0), r.id + ' does not match its own example: ' + ex); } console.log('PASS every message rule matches each of its documented examples'); }
 console.log('Message rule-example tests passed');
 console.log(' tests passed');
+// Hidden links pasted from an email
+{ const M = require('../js/message.js'); const t = 'Your Google account needs review. Sign in at www.google.com to keep it.';
+  const r = M.analyzeMessage(t, { hiddenLinks: [{ text: 'www.google.com', href: 'https://g00gle-review.top/signin' }] });
+  require('assert')(r.findings.some(f => f.id === 'hidden-link') && r.level === 'High'); console.log('PASS email link showing google.com but going elsewhere is High');
+  require('assert')(!M.analyzeMessage(t).findings.some(f => f.id === 'hidden-link')); console.log('PASS plain-text paste has no hidden-link finding');
+  require('assert')(!M.analyzeMessage('see www.google.com', { hiddenLinks: [{ text: 'www.yahoo.com', href: 'https://evil.top' }] }).findings.some(f => f.id === 'hidden-link')); console.log('PASS links no longer in the box are ignored');
+  require('assert')(!M.analyzeMessage(t, { hiddenLinks: [{ text: 'www.google.com', href: 'https://www.google.com/x' }] }).findings.some(f => f.id === 'hidden-link')); console.log('PASS honest email link is not flagged');
+}
