@@ -2,9 +2,9 @@
 
 **Check it before you click, reply or connect.**
 
-NetSafe is a privacy-first internet safety assistant for everyday people. You paste a message or a link, try a made-up password, or describe a Wi-Fi network. NetSafe then tells you in plain English how risky it looks, why, and exactly what to do next, including what to do if you already clicked, replied or paid.
+NetSafe is a privacy-first internet, safety assistant for everyday people. You paste a message or a link, try a made-up password, or describe a Wi-Fi network.  NetSafe then tells you in plain English how risky it looks, why, and exactly what to do next, including what to do if you already clicked, replied or paid.
 
-Everything runs in your browser. Nothing you type is stored or sent anywhere, links are never opened, and networks are never scanned. Results come from transparent rules, not AI, and NetSafe never calls anything "safe".
+Everything runs in your browser. Nothing you type is stored or sent anywhere, links are never opened, and networks are never scanned. Results come from transparent rules, not AI, and NetSafe never calls anything ,"safe".
 
 ![NetSafe home page](docs/screenshots/home.png)
 
@@ -16,7 +16,7 @@ Everything runs in your browser. Nothing you type is stored or sent anywhere, li
 
 Every day people receive fake bank messages, suspicious links and requests for money from accounts that look like a friend's. They also have to connect to unknown Wi-Fi. Terms like OTP, HTTPS or WPA3 are confusing, so many people guess, and one wrong guess can empty a bank account or lose a WhatsApp account.
 
-Pakistan's FIA received more than 250,000 complaints in 2025 about hacked WhatsApp, Facebook and Instagram accounts and fake profiles used to ask for money. NetSafe's goal is to help ordinary people pause, recognise the warning signs, and take the right next step.
+Pakistan's FIA received more than 250,000 complaints in 2025 about hacked WhatsApp, Facebook, and Instagram accounts and fake profiles used to ask for money. NetSafe's goal is to help ordinary people pause, recognise the warning signs, and take the right next step.
 
 ## Use cases
 
@@ -31,7 +31,7 @@ Pakistan's FIA received more than 250,000 complaints in 2025 about hacked WhatsA
 | A link in an email whose text says `www.google.com` but which really goes somewhere else | Reads the real address from the copied email and warns about the mismatch |
 | Fake e-challan, BISP, tax refund or parcel messages | Flags official-sounding names that come with a payment, link or threat |
 | Choosing a new password | Explains why `Summer2024!` is weak (a word plus a year) and suggests a passphrase |
-| Connecting to airport, café or hotel Wi-Fi | Rates the risk from what you know about the network and says what is reasonable to do on it |
+| Connecting ,to airport, café or hotel Wi-Fi | Rates the risk from what you know about the network and says what is reasonable to do on it |
 | Learning how encryption works (students, teachers) | The Crypto Lab runs real AES-GCM and SHA-256 and shows tampering being detected |
 
 ## Features and screenshots
@@ -46,7 +46,7 @@ Finds scam wording in an SMS, WhatsApp message or email and highlights each phra
 - Remote-access apps and WhatsApp code theft
 - Hacked-friend money requests: repay promises, sudden emergencies, "can't talk", payment to another person's wallet
 - Gift card codes, "vote for my child", "is this you?" links, and "Hi mum, new number"
-- Risky links, and links that show one site but go to another
+- Risky links, and links that show, one site but go to another
 
 Every finding says what was noticed, why it matters, what could happen and what to do.
 
