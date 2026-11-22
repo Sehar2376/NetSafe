@@ -28,18 +28,20 @@ const MSG_RULES = [
     re: [/\b(?:i|we)(?: have)? (?:recorded|hacked|filmed|captured) (?:you|your (?:webcam|camera|device|phone|computer|screen))\b/gi,
          /\b(?:your|ur) (?:private|personal|intimate|nude|naked|secret) (?:videos?|photos?|pictures?|pics|images?|chats?|data)\b/gi,
          /\b(?:send|share|forward|leak|post|upload|publish|expose)\w*\s+(?:\w+\s+){0,4}?(?:to|with)\s+(?:all\s+)?(?:your|ur)\s+(?:contacts|family|friends|relatives|colleagues|boss)\b/gi,
-         /\b(?:go|make it|will be|kar denge|kar dein ge)\s+viral\b/gi, /\bviral kar\w*/gi, /\bI know your password\b/gi],
+         /\b(?:go|make it|will be|kar denge|kar dein ge)\s+viral\b/gi, /\bviral kar\w*/gi, /\bI know your password\b/gi,
+         /\bwill\s+(?:call|message|contact|text|whatsapp|inform)\s+(?:all\s+)?(?:your|ur)\s+(?:contacts|family|relatives|friends|colleagues|boss)\b/gi,
+         /\bwill\s+(?:post|leak|upload|publish|share|send)\s+(?:all\s+)?(?:your|ur)\s+(?:pictures?|photos?|pics|videos?|images?|chats?)\b/gi],
     why: 'Blackmail messages claim to have private videos or data and threaten to share them unless you pay. Most "I recorded you" emails are mass-sent and have nothing. Loan-app recovery agents use the same threats.',
     could: 'Paying usually leads to more demands, not deletion.',
     action: 'Do not pay and do not reply. Keep the messages as evidence and report to the FIA cybercrime helpline (1991 in Pakistan) or your local police. If the message shows a real old password, change it everywhere you used it.' },
-  { id: 'wrong-transfer', examples: ['sent to your account by mistake', 'please send it back', 'galti se aap ke account mein'], pts: 35, title: 'Says money was sent to you by mistake',
+  { id: 'wrong-transfer', examples: ['sent to your account by mistake', 'please send it back', 'galti se aap ke account mein'], pts: 50, title: 'Says money was sent to you by mistake',
     re: [/\b(?:sent|transferred|deposited|credited|bheje?|bhej diye?|aa gaye?)\b(?:\W+\w+){0,6}?\W+(?:by mistake|mistakenly|accidentally|wrongly|galti se|ghalti se)\b/gi,
          /\b(?:by mistake|mistakenly|accidentally|galti se|ghalti se)\b(?:\W+\w+){0,6}?\W+(?:sent|transferred|account|wallet|number|bhej)\w*/gi,
-         /\b(?:wrong (?:transfer|transaction|number|account)|send (?:it|the money|the amount|them) back|return (?:the|my) (?:money|amount|payment)|wapas (?:bhej|kar|kardo|kar dein)\w*)\b/gi],
+         /\b(?:wrong (?:transfer|transaction|number|account)|send (?:it|the money|the amount|them) back|return (?:the|my) (?:money|amount|payment)|wapas (?:bhej\w*|kar ?do|kar dein|kardein))\b/gi],
     why: 'In this scam a fake "credit" SMS is sent, then someone asks you to return money that never arrived, or to read out a code to "reverse" it.',
     could: 'You would send your own money, or a code that lets them take more.',
     action: 'Check your balance in your bank or wallet app, not in the SMS. Do not send anything back yourself. If money really arrived, tell your bank and let them reverse it.' },
-  { id: 'job-task', examples: ['earn Rs 5,000 per day', 'like videos and get paid', 'recharge 100 USDT for VIP level'], pts: 25, title: 'Easy-money job offer (task scam)',
+  { id: 'job-task', examples: ['earn Rs 5,000 per day', 'like videos and get paid', 'recharge 100 USDT for VIP level'], pts: 40, title: 'Easy-money job offer (task scam)',
     re: [/\b(?:earn|make|income|salary|profit|kamaa?(?:o|ein|en|yen)?)\b(?:\W+\w+){0,6}?\W+(?:per|a|every|daily|rozana|roz)\W+(?:day|hour|week|din)\b/gi,
          /\b(?:like|rate|review|watch|subscribe to|follow)\s+(?:\w+\s+){0,2}?(?:videos?|products?|apps?|hotels?|posts?|pages?)\b(?:\W+\w+){0,6}?\W+(?:paid|earn|commission|reward|income|salary)\b/gi,
          /\b(?:recharge|top[- ]?up|vip (?:level|upgrade)|task reset|activation fee|registration fee|security deposit)\b/gi],
@@ -50,14 +52,17 @@ const MSG_RULES = [
     re: [/\b(?:part[- ]time (?:job|work)|work from home|online job|home based job|data entry job|no experience (?:needed|required)|ghar baithe)\b/gi],
     why: 'Real employers rarely recruit through unexpected WhatsApp, Telegram or SMS messages.', could: 'The offer may lead to fees or requests for your ID documents.',
     action: 'Look up the company yourself and apply only through its official website.' },
-  { id: 'investment', examples: ['guaranteed profit', 'double your money', 'crypto trading signals'], pts: 30, title: 'Promises guaranteed or very high returns',
+  { id: 'investment', examples: ['guaranteed profit', 'double your money', '3% daily profit'], pts: 50, title: 'Promises guaranteed or very high returns',
     re: [/\b(?:guaranteed|fixed|assured|risk[- ]free|100%)\s+(?:\w+\s+){0,2}?(?:profit|returns?|income|earnings)\b/gi,
          /\b(?:double|triple|2x|3x|10x)\s+(?:your\s+)?(?:money|investment|amount|paisa|paise)\b/gi,
-         /\b(?:crypto|bitcoin|usdt|forex|binary options?)\s+(?:\w+\s+){0,1}?(?:trading|investment|signals?|platform|mining|plan)\b/gi,
-         /\b\d+\s?%\s+(?:profit|returns?)\s+(?:per|a|every|daily|weekly|monthly)\b/gi],
+         /\b\d+(?:\.\d+)?\s?%\s+(?:(?:daily|weekly|monthly)\s+)?(?:profit|returns?)\b(?:\s+(?:per|a|every|daily|weekly|monthly)\b)?/gi, /\bno risk\b/gi],
     why: 'No real investment can guarantee high returns. These offers often start as a friendly "wrong number" chat.',
     could: 'The "platform" shows fake gains, then blocks withdrawals until you pay more.',
     action: 'Do not invest through anyone who contacted you unexpectedly. Check that a company is licensed with the SECP (Pakistan) or your country\'s regulator.' },
+  { id: 'crypto', examples: ['crypto trading platform', 'forex signals', 'USDT investment'], pts: 15, title: 'Crypto or forex trading offer',
+    re: [/\b(?:crypto|bitcoin|btc|usdt|forex|binary options?)\s+(?:\w+\s+){0,1}?(?:trading|investment|signals?|platform|mining|plan)\b/gi],
+    why: 'Fake trading platforms are a common follow-up to friendly chats and job offers. They show fake profits, then block withdrawals.', could: 'You could lose everything you deposit.',
+    action: 'Do not deposit money on a platform someone recommended in a message. Check it is licensed with the SECP or your regulator.' },
   { id: 'official-claim', examples: ['BISP', 'e-challan', 'your SIM will be blocked by PTA'], pts: 20, requires: ['payment', 'link', 'banking', 'otp', 'password', 'threat', 'prize', 'call-number'], title: 'Uses a government or official programme name',
     re: [/\b(?:bisp|benazir(?: income support)?|ehsaas|8171|e[- ]?challan|traffic (?:fine|challan|violation)|safe city|psca|fia|cyber ?crime|pta|dirbs|nadra|fbr|tax refund|income tax|customs(?: duty| office)?|pakistan post|courier|parcel|package|tcs|leopards|electricity bill|gas bill|k[- ]?electric|lesco|iesco|toll)\b/gi],
     why: 'Scammers copy government aid schemes, traffic fines, tax refunds, SIM blocking and delivery notices. Official bodies do not ask for payment, codes or bank details by SMS or WhatsApp.',
@@ -73,10 +78,11 @@ const MSG_RULES = [
     re: [/\b(?:call|contact|whatsapp|message|text|dial|rabta)\w*\b(?:\W+\w+){0,4}?\W+(?:\+?\d[\d\s-]{8,}\d)/gi],
     why: 'Scam messages give their own number so you reach the scammer instead of the real organisation.', could: 'The person who answers may pretend to be your bank or an official.',
     action: 'Use the number on your card, bill or the official website instead.' },
-  { id: 'code-theft', examples: ['I sent a code to your number by mistake', 'send me the 6 digit code'], pts: 35, floor: 'High', title: 'Asks for a code sent to your phone',
+  { id: 'code-theft', examples: ['I sent a code to your number by mistake', 'send me the 6 digit code', 'tell me the code you just received'], pts: 35, floor: 'High', title: 'Asks for a code sent to your phone',
     re: [/\b(?:sent|send|share|forward|tell|give)\w*\b(?:\W+\w+){0,4}?\W+(?:\d|six|4|5|6)[- ]?digit(?:s)? (?:code|number|pin)\b/gi,
          /\b(?:whatsapp|telegram|facebook|instagram|gmail|google) (?:verification )?code\b/gi,
-         /\bcode\b(?:\W+\w+){0,5}?\W+by mistake\b/gi],
+         /\bcode\b(?:\W+\w+){0,5}?\W+by mistake\b/gi,
+         /\b(?:tell|send|share|give|forward|read)\w*\s+(?:me|us)\s+(?:the|that|this)\s+code\b/gi, /\bcode (?:you|that you) (?:just )?(?:received|got)\b/gi],
     why: 'The code that arrives by SMS is the key to your WhatsApp or other account. Whoever has it can move your account to their phone.',
     could: 'Your WhatsApp could be taken over and used to ask your contacts for money.',
     action: 'Never share a code you receive, even with a friend. Turn on two-step verification in WhatsApp (Settings, Account, Two-step verification).' },
@@ -89,27 +95,28 @@ const MSG_RULES = [
     why: 'Real companies do not ask you to send your password in a message.', could: 'Someone could log in as you and lock you out.',
     action: 'Do not send your password. If you are worried about the account, open the official app or website yourself and change the password there.' },
   { id: 'banking', examples: ['send your card number', 'verify your CNIC', 'share your bank details'], pts: 30, floor: 'High', title: 'Asks for card, bank or ID details',
-    re: [req(ASK2, 'card number|card details|account number|iban|cnic|cvv|expiry date|bank details|bank account details|atm pin|debit card|credit card|ssn|social security(?: number)?|national id|id card')],
+    re: [req(ASK2, 'card number|card details|account number|iban|cnic|cvv|expiry date|bank details|bank account details|atm pin|debit card|credit card|ssn|social security(?: number)?|national id|id card'), /\b(?:biometric(?:s)?(?: verification)?|thumb ?impressions?|fingerprints?)\b(?:\W+\w+){0,4}?\W+(?:calling|call|visit|send|share|give|link|agent)\b/gi],
     why: 'Card, account and ID numbers can be used to take money or pretend to be you.', could: 'Money could be taken, or your identity used to open accounts.',
     action: 'Do not send these details. Call your bank on the number printed on your card or shown on its official website.' },
-  { id: 'payment', examples: ['transfer money to this account', 'send Rs. 5,000 processing fee', 'buy gift cards', 'sent us moeny', 'send 1000k', 'Rs 2000 tax bhejein'], pts: 30, title: 'Asks you to send money or pay a fee',
-    re: [req('send|sent|transfer|transferred|pay|paid|deposit|wire|remit|bhej(?:ein|en|o|do|dein)?|de do|dedo', 'money|mon(?:ey|y|ney|ie)|moeny|monye|paisa|paise|pese|raqam|amount|fees?|payment|charges?|funds|cash|ransom|rs\\.?\\s?\\d[\\d,]*|pkr\\s?\\d[\\d,]*|\\$\\s?\\d[\\d,]*|\\d[\\d,.]*\\s?(?:k|lakh|lac|crore|million|rs|rupees|pkr|usd|dollars)', 5),
-         /(?:\brs\.?\s?\d[\d,]*|\b\d[\d,]*\s?(?:rs|rupees|pkr)\b|\bpaise\b|\braqam\b|\bfee\b|\btax\b)\W+(?:\w+\W+){0,3}?(?:bhej|jama|ada)\w*/gi,
+  { id: 'payment', notAfter: /\b(?:i|we)\s*(?:will|'ll|’ll|am going to|can|shall)\s+$/i, examples: ['transfer money to this account', 'send Rs. 5,000 processing fee', 'buy gift cards', 'sent us moeny', 'send 1000k', 'Rs 2000 tax bhejein'], pts: 30, title: 'Asks you to send money or pay a fee',
+    re: [req('send|sent|transfer|transferred|pay|paid|deposit|wire|remit|bhej(?:ein|en|o|do|dein)?|de do|dedo', 'money|mon(?:ey|y|ney|ie)|moeny|monye|paisa|paise|pese|raqam|amount|fees?|fines?|penalty|challan|loan|payment|charges?|funds|cash|ransom|rs\\.?\\s?\\d[\\d,]*|pkr\\s?\\d[\\d,]*|\\$\\s?\\d[\\d,]*|\\d[\\d,.]*\\s?(?:k|lakh|lac|crore|million|rs|rupees|pkr|usd|dollars)', 5),
+         /(?:\brs\.?\s?\d[\d,]*|\b\d[\d,]*\s?(?:rs|rupees|pkr)\b|\b\d{3,}[\d,]*\b|\bpaise\b|\braqam\b|\bfee\b|\btax\b)\W+(?:\w+\W+){0,3}?(?:bhej|jama|ada)\w*/gi,
+         /\b(?:need|want|urgently need)\s+(?:rs\.?\s?|pkr\s?|\$\s?)?\d{1,3}(?:,\d{3})+\b|\b(?:need|want)\s+(?:rs\.?\s?|pkr\s?|\$\s?)?\d+\s?(?:k|lakh|lac|crore|thousand)\b/gi,
          /\b(?:gift cards?|bitcoin|crypto(?:currency)?|usdt|western union|moneygram|processing fee|advance fee|registration fee|clearance fee|delivery (?:fee|charges)|customs (?:fee|duty)|tax to release)\b/gi],
     why: 'Scams often ask for an upfront fee, a transfer or untraceable payment such as gift cards or crypto.', could: 'Money sent this way is very hard to get back.',
     action: 'Do not send money. Check the request by phone or in person with the real person or organisation, using contact details you already trust.' },
-  { id: 'threat', examples: ['your account will be blocked', 'legal action', 'suspicious login', 'all your SIMs will be blocked', 'connection will be disconnected'], pts: 25, title: 'Threatens account closure or trouble',
-    re: [/\b(?:accounts?|cards?|sims?|wallets?|numbers?|connections?|services?|electricity|gas|line)\b[^.!?\n]{0,40}?\b(?:blocked|suspended|closed|locked|deactivated|disabled|frozen|terminated|restricted|disconnected|cut off)\b/gi,
-         /\b(?:legal action|arrest(?:ed)?|police|court|warrant|FIA|penalty|prosecut\w+)\b/gi, /\b(?:band|block) ho (?:jaye|jayega|jaega)\b/gi,
-         /\b(?:unauthori[sz]ed|suspicious) (?:login|transaction|access|activity)\b/gi],
+  { id: 'threat', examples: ['your account will be blocked', 'legal action', 'suspicious login', 'a case is registered against you', 'all your SIMs will be blocked', 'connection will be disconnected'], pts: 25, title: 'Threatens account closure or trouble',
+    re: [/\b(?:accounts?|cards?|sims?|wallets?|numbers?|connections?|services?|electricity|gas|line|id)\b[^.!?\n]{0,40}?\b(?:blocked|suspended|closed|locked|deactivated|disabled|frozen|terminated|restricted|disconnected|cut off|deleted|banned|removed)\b/gi,
+         /\b(?:legal action|arrest(?:ed)?|warrant|penalty|prosecut\w+)\b/gi, /\b(?:police|court|fia|fir|case|complaint)\b(?:\W+\w+){0,4}?\W+(?:against you|on you|your name|your number)\b/gi, /\b(?:band|block) ho (?:jaye|jayega|jaega)\b/gi,
+         /\b(?:unauthori[sz]ed|suspicious|unusual) (?:login|sign-?in|transaction|access|activity)\b/gi],
     why: 'Fear makes people act before they think. Scammers use threats to rush you.', could: 'You might share information or pay without checking whether the threat is real.',
     action: 'Stay calm. Contact the organisation yourself through its official website or a phone number you already trust, not through this message.' },
   { id: 'prize', examples: ['you have won', 'claim your prize', 'lucky draw'], pts: 25, title: 'Promises a prize, reward or refund',
-    re: [/\byou(?:.?ve| have)? (?:won|been selected)\b/gi, /\b(?:congratulations|winner|lottery|lucky draw|jackpot|free gift|cashback|reward points|inaam|inam)\b/gi, /\bclaim (?:your )?(?:prize|reward|gift|cash|refund|bonus|payment)\b/gi],
+    re: [/\byou(?:.?ve| have)? (?:won|been selected)\b/gi, /\b(?:lottery|lucky draw|jackpot|free gift|reward points|inaam|inam)\b/gi, /\bclaim (?:your )?(?:prize|reward|gift|cash|refund|bonus|payment)\b/gi],
     why: 'You cannot win a contest you did not enter. Fake prizes are used to get your details or a "fee".', could: 'You could lose money or hand over personal information.',
     action: 'Ignore the offer. If you think it might be real, find the organisation yourself and ask them directly.' },
   { id: 'urgency', examples: ['urgent', 'within 24 hours', 'act now'], pts: 15, title: 'Pushes you to act quickly',
-    re: [/\b(?:urgent(?:ly)?|immediately|right now|act now|asap|hurry|last chance|final (?:notice|warning|reminder)|expires? (?:today|tonight|soon)|today only|limited time|foran|jaldi)\b/gi, /\bwithin (?:\d+|one|two|a few) (?:hours?|hrs?|minutes?|mins?|days?)\b/gi],
+    re: [/\b(?:urgent(?:ly)?|immediately|right now|act now|asap|hurry|last chance|final (?:notice|warning|reminder)|expires? (?:today|tonight|soon)|today only|limited time|limited (?:slots|seats|offer)|foran|jaldi)\b/gi, /\bwithin (?:\d+|one|two|a few) (?:hours?|hrs?|minutes?|mins?|days?)\b/gi],
     why: 'Pressure stops you from checking. Genuine organisations usually give you time.', could: 'A rushed decision is easier to get wrong.',
     action: 'Pause. Urgency alone is not proof of a scam, but verify the message through an official channel before doing anything.' },
   { id: 'impersonation', examples: ['dear customer', 'customer care', 'this is the bank'], pts: 15, title: 'Sounds like an official message but is generic',
@@ -122,7 +129,7 @@ const MSG_RULES = [
     why: 'Secrecy stops other people from warning you.', could: 'Nobody can step in before you lose money or data.',
     action: 'Tell someone you trust about the message. A genuine request survives being checked.' },
   { id: 'new-number', examples: ['this is my new number', 'hi mum'], pts: 15, requires: ['payment', 'banking'], title: 'Claims to be someone you know on a new number',
-    re: [/\b(?:new number|changed my number|lost my phone|hi (?:mum|mom|dad))\b/gi],
+    re: [/\b(?:new number|changed my number|lost my phone|hi (?:mum|mom|dad)|naya number|phone kho gaya|number badal gaya)\b/gi],
     why: 'A common scam pretends to be a relative or friend with a new number, then asks for money.', could: 'You might send money to a stranger.',
     action: 'Call the person on their old number, or ask a question only they could answer, before sending anything.' }
 ];
@@ -149,9 +156,10 @@ function analyzeMessage(raw, opts = {}) {
   const found = [], ranges = [];
   const mark = (s, e, id) => ranges.push({ s, e, ids: [id] });
 
+  // notAfter: skip a match right after words like "I will", because an offer ("I will send the money") is not a request.
   for (const r of MSG_RULES) {
     const phrases = [], seen = new Set();
-    for (const re of r.re) for (const m of text.matchAll(re)) { if (!m[0]) continue; mark(m.index, m.index + m[0].length, r.id); if (!seen.has(m[0].toLowerCase())) { seen.add(m[0].toLowerCase()); phrases.push(m[0]); } }
+    for (const re of r.re) for (const m of text.matchAll(re)) { if (!m[0]) continue; if (r.notAfter && r.notAfter.test(text.slice(Math.max(0, m.index - 30), m.index))) continue; mark(m.index, m.index + m[0].length, r.id); if (!seen.has(m[0].toLowerCase())) { seen.add(m[0].toLowerCase()); phrases.push(m[0]); } }
     if (phrases.length) found.push({ id: r.id, pts: r.pts, floor: r.floor, requires: r.requires, title: r.title, phrases, found: 'Found: ' + phrases.slice(0, 4).map(q).join(', ') + '.', why: r.why, could: r.could, action: r.action });
   }
   // Links: analysed with the URL analyzer (text only)
@@ -164,7 +172,7 @@ function analyzeMessage(raw, opts = {}) {
   }
   if (links.length) {
     const worst = [...links].sort((a, b) => MSG_ORDER.indexOf(b.level) - MSG_ORDER.indexOf(a.level))[0];
-    const pts = { Low: 5, Medium: 20, High: 30 }[worst.level];
+    const pts = { Low: 5, Medium: 20, High: 40 }[worst.level];
     const disp = worst.url.length > 80 ? worst.url.slice(0, 77) + '...' : worst.url;
     found.push({ id: 'link', pts, title: worst.level === 'Low' ? 'Message contains a link' : 'Link in the message has warning signs', phrases: links.map(l => l.url),
       found: worst.level === 'Low' ? 'The message contains ' + (links.length > 1 ? links.length + ' links' : 'a link') + ' (' + disp + '). Its text shows no strong warning signs, but the site itself was not checked.'
@@ -191,7 +199,8 @@ function analyzeMessage(raw, opts = {}) {
   }
   // Combination-only rules
   const have = id => found.some(f => f.id === id);
-  const findings = found.filter(f => !f.requires || f.requires.some(have)).sort((a, b) => b.pts - a.pts);
+  // Rules that always make a message High (codes, passwords, bank details, threats) lead, so the most important step is about them.
+  const findings = found.filter(f => !f.requires || f.requires.some(have)).sort((a, b) => (b.floor ? 1 : 0) - (a.floor ? 1 : 0) || b.pts - a.pts);
   const keep = new Set(findings.map(f => f.id));
   const nOf = Object.fromEntries(findings.map((f, i) => [f.id, i + 1]));
 

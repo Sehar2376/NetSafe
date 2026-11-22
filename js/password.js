@@ -63,15 +63,15 @@ function analyzePassword(raw, opts = {}) {
   if (famous) { add('famous', 60, 'A well-known example phrase', 'Famous phrases and example passwords are at the top of the lists attackers try first.', 'Choose your own words that are not from a famous quote or example.'); cap = Math.min(cap, 15); }
   else if (exact) { add('common', 60, 'A very common password', 'This is a common password, or one with only a few extra characters added. Attackers try these first.', 'Pick something unrelated to common passwords. A passphrase of 4+ random words works well.'); cap = Math.min(cap, 15); }
   else {
-    const hit = PW_COMMON.find(w => w.length >= 5 && vars.some(v => v.includes(w)));
+    const hit = passphrase ? null : PW_COMMON.find(w => w.length >= 5 && vars.some(v => v.includes(w)));
     if (hit) { cap = Math.min(cap, 59); add('common-word', 40, 'Contains a very common word ("' + hit + '")', 'Common words are tried first, even with numbers or symbols swapped in (p@ssw0rd).', 'Avoid common words. Use unrelated words or random characters.'); }
   }
   if (pwHasWalk(p)) add('keyboard', 20, 'Keyboard pattern', 'Patterns like qwer or asdf are very predictable.', 'Avoid runs of neighbouring keys.');
   if (pwHasRun(p)) add('sequence', 15, 'Predictable sequence', 'Runs like abcd or 1234 (up or down) are among the first things guessed.', 'Avoid counting or alphabet sequences.');
   const unique = new Set(p).size;
   if (unique * 3 <= len || /(.)\1{3,}/.test(p) || /^(.{1,4})\1{2,}$/.test(p)) { add('repeat', 25, 'Too many repeated characters', 'Repeating characters or chunks adds length without adding unpredictability.', 'Avoid repeated characters or repeated chunks such as abab.'); cap = Math.min(cap, 25); }
-  if (/^[A-Za-z]{3,12}\d{1,4}[^A-Za-z0-9]?$/.test(p) && !passphrase) { add('pattern', 15, 'Common shape: one word, a number, maybe a symbol', 'Attackers know people write "Word2024!" and try this shape early.', 'Use several unrelated words instead of one word plus digits.'); cap = Math.min(cap, 34); }
-  else if (/(?:19|20)\d{2}/.test(p) && len < 16) add('year', 8, 'Contains a year', 'Years and dates are easy to guess, especially birth years.', 'Leave out dates, birthdays and years.');
+  if (/^[A-Za-z]{3,12}[^A-Za-z0-9]?\d{1,4}[^A-Za-z0-9]?$/.test(p) && !passphrase) { add('pattern', 15, 'Common shape: one word, a number, maybe a symbol', 'Attackers know people write "Word2024!" and try this shape early.', 'Use several unrelated words instead of one word plus digits.'); cap = Math.min(cap, 34); }
+  else if (/(?:19|20)\d{2}/.test(p) && len < 16) { add('year', 8, 'Contains a year', 'Years and dates are easy to guess, especially birth years.', 'Leave out dates, birthdays and years.'); cap = Math.min(cap, 59); }
   const digitsOnly = p.replace(/[\s-]/g, '');
   const isPhone = /^(?:\+?92|0)3\d{9}$/.test(digitsOnly), isCnic = /^\d{13}$/.test(digitsOnly) || /^\d{5}-\d{7}-\d$/.test(p);
   const isDob = /^(?:0[1-9]|[12]\d|3[01])(?:0[1-9]|1[0-2])(?:19|20)\d{2}$/.test(digitsOnly) || /^(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])$/.test(digitsOnly);

@@ -27,6 +27,7 @@ NetSafe is an educational, rule-based tool. It helps people pause and check; it 
 - Threat detection looks for a violent verb aimed at a person ("kill him", "hurt your son"), kidnapping or ransom words, and "your son is with us" only alongside a threat or money demand. Joking messages such as "I will kill you" are still rated High. Threats written another way, in other languages or with heavy misspellings can be missed. NetSafe cannot tell whether a threat is real: always check on the person and contact the police.
 - Money misspellings recognised are a short list (moeny, mony, monney, paisa and a few more).
 - Scenario rules (blackmail, money sent by mistake, task jobs, investment, code theft, remote-access apps, official-programme names, numbers to call) were built from PTA, FIA, Punjab Safe City, SBP, SECP, FTC and FBI warnings published 2024-2026. Wording outside those patterns is missed. Tested on 20 real-style scam messages (19 High, 1 Medium) and 13 everyday messages (all Low); other everyday wording can still trigger a rule.
+- A real-world sweep of 246 scenarios passes (`tests/realworld.test.js`): a tuning set, a fresh set written after tuning (54 of 61 right before its fixes, 89%), and 40 everyday messages that stay Low. New wording outside these patterns can still be missed or, rarely, flagged.
 - Official-programme names (BISP, e-challan, PTA, FBR, courier ...) only count when the message also asks for money, codes or details, gives a link or a number to call, or threatens. A genuine notice that only informs stays Low.
 
 ## Password checker

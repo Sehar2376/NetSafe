@@ -3,7 +3,7 @@
    redirects or ownership. Edit CONFIG to change weights. */
 const URL_CONFIG = {
   thresholds: { medium: 15, high: 40 },
-  pts: { http: 20, ip: 30, userinfo: 35, punycode: 20, mixedScript: 20, shortener: 20, brand: 35,
+  pts: { http: 20, ip: 30, userinfo: 40, punycode: 20, mixedScript: 20, shortener: 20, brand: 35,
          lookalike: 35, fakeGov: 30, freeHost: 10, deepSub: 10, hyphens: 10, longHost: 10, keywords: 10, tld: 10, port: 10, redirectParam: 10, longUrl: 5, encodedHost: 10, codeLink: 60 },
   maxLength: 2048
 };
@@ -16,7 +16,7 @@ const BRANDS = {
   apple: ['apple.com', 'icloud.com'], amazon: ['amazon.com', 'amazon.co.uk', 'amazon.de', 'amazon.in', 'amazon.ca', 'amazon.ae', 'amazonaws.com', 'media-amazon.com'],
   facebook: ['facebook.com', 'fb.com', 'facebook.net', 'fbcdn.net'], instagram: ['instagram.com'], whatsapp: ['whatsapp.com', 'whatsapp.net'], netflix: ['netflix.com', 'netflix.net', 'nflxvideo.net'],
   binance: ['binance.com'], dhl: ['dhl.com'], fedex: ['fedex.com'], easypaisa: ['easypaisa.com.pk'], jazzcash: ['jazzcash.com.pk'],
-  hbl: ['hbl.com'], ubl: ['ubl.com.pk'], meezanbank: ['meezanbank.com'], nadra: ['nadra.gov.pk'],
+  hbl: ['hbl.com'], ubl: ['ubl.com.pk'], meezanbank: ['meezanbank.com'], meezan: ['meezanbank.com'], abl: ['abl.com'], alliedbank: ['abl.com'], nadra: ['nadra.gov.pk'],
   bisp: ['bisp.gov.pk'], psca: ['psca.gop.pk', 'punjab.gov.pk'], echallan: ['psca.gop.pk', 'punjab.gov.pk', 'sindhpolice.gov.pk', 'islamabadpolice.gov.pk'], fbr: ['fbr.gov.pk'],
   pta: ['pta.gov.pk'], sbp: ['sbp.org.pk'], mcb: ['mcb.com.pk'], bankalfalah: ['bankalfalah.com'], daraz: ['daraz.pk', 'daraz.com'], tcs: ['tcsexpress.com', 'tcs.com.pk'],
   pakpost: ['pakpost.gov.pk'], telenor: ['telenor.com', 'telenor.com.pk'], usps: ['usps.com'], tiktok: ['tiktok.com'], telegram: ['telegram.org', 't.me'],
@@ -200,7 +200,7 @@ function analyzeUrl(raw) {
   // 6. Brand name on someone else's domain
   let brandHit = false;
   if (!isIp) {
-    const tokens = host.split(/[.-]/).map(leet);
+    const tokens = host.split(/[.-]/).concat(rd.domain.split('.')[0].replace(/-/g, '')).map(leet);
     for (const brand in BRANDS) {
       const Brand = brand.charAt(0).toUpperCase() + brand.slice(1);
       const hit = tokens.some(t => t === brand || (brand.length >= 5 && t.includes(brand)));

@@ -15,13 +15,13 @@ t('asking for password forces High', 'Please send your password to confirm', r =
 t('Roman Urdu OTP + threat', 'Aap ka account band ho jayega foran. Apna OTP bhej dein.', r => assert(r.level === 'High' && ids(r).includes('otp') && ids(r).includes('threat')));
 t('gift card / crypto payment', 'Buy gift cards and send the codes', r => assert(ids(r).includes('payment')));
 t('link-only message is Low with link finding', 'Check this https://example.com/page.', r => assert(r.level === 'Low' && ids(r).includes('link') && r.links[0].url === 'https://example.com/page'));
-t('risky link raises level', 'Pay here: http://203.0.113.10/pay', r => assert(r.level !== 'Low' && r.findings.find(f => f.id === 'link').pts === 30));
+t('risky link raises level', 'Pay here: http://203.0.113.10/pay', r => assert(r.level !== 'Low' && r.findings.find(f => f.id === 'link').pts === 40));
 t('link is never turned into markup', 'see http://x.example/<script>alert(1)</script>', r => assert(r.segments.every(s => typeof s.text === 'string')));
 t('empty rejected', '   ', r => assert(!r.ok));
 t('null safe', null, r => assert(!r.ok));
 t('too long rejected', 'a'.repeat(5001), r => assert(!r.ok));
 t('every finding has all explanation fields', BANK, r => r.findings.forEach(f => assert(f.title && f.found && f.why && f.could && f.action)));
-t('findings sorted by weight', BANK, r => assert(r.findings.every((f, i, a) => !i || a[i - 1].pts >= f.pts)));
+t('findings sorted: always-High rules first, then by weight', BANK, r => assert(r.findings.every((f, i, a) => !i || (a[i - 1].floor ? 1 : 0) > (f.floor ? 1 : 0) || ((a[i - 1].floor ? 1 : 0) === (f.floor ? 1 : 0) && a[i - 1].pts >= f.pts)) && r.findings[0].id === 'otp' && /Never share an OTP/.test(r.topAction)));
 t('segments rebuild the original text exactly', BANK, r => assert.strictEqual(r.segments.map(s => s.text).join(''), r.text));
 t('highlighted segments carry finding numbers that exist', BANK, r => { const marked = r.segments.filter(s => s.n.length); assert(marked.length >= 4); marked.forEach(s => s.n.forEach(n => assert(n >= 1 && n <= r.findings.length))); });
 t('plain text segments have no numbers', 'Hi, share your OTP please, thanks', r => assert(r.segments.some(s => !s.n.length) && r.segments.some(s => s.n.length)));
