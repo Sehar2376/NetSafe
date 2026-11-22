@@ -1,0 +1,30 @@
+# Netlify settings for NetSafe: a static site (HTML, CSS, vanilla JavaScript). No build step and no Python.
+# Deploy this folder as it is: index.html must sit at the top of the published folder, next to css/, js/ and assets/.
+
+[build]
+  publish = "."   # this folder. If index.html is in a subfolder of your repository, set "Base directory" to that subfolder in Netlify.
+  command = ""     # nothing to build
+
+# Turn off Netlify's old asset optimization. It moved scripts to a cloudfront.net address, which NetSafe's
+# security policy (scripts only from this site) refuses to run, so every tool stopped while the design still loaded.
+[build.processing]
+  skip_processing = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Content-Type = "text/javascript; charset=utf-8"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"

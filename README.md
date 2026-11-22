@@ -14,10 +14,10 @@ People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, 
 
 | Page | What it does |
 |---|---|
-| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats, fake prizes, urgency, "new number" scams, risky links, sender clues) and highlights each phrase |
-| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, brands on other domains, and more |
-| **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps), keyboard and counting patterns, repeats, famous phrases and reuse |
-| **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page). Public Wi-Fi is not automatically rated dangerous |
+| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats of violence or kidnapping, blackmail, "sent by mistake" refunds, task jobs, investment offers, fake BISP/e-challan/PTA/FBR notices, remote-access apps, WhatsApp code theft, account threats, fake prizes, urgency, "new number" scams, risky links, sender clues) and highlights each phrase |
+| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, free hosting pages (pages.dev, vercel.app ...), fake government names, brands on other domains (including Pakistani banks, couriers and offices), and more |
+| **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps and the latest NordPass lists), phone, CNIC and birth-date passwords, keyboard and counting patterns, repeats, famous phrases and reuse |
+| **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page), plus "free" hotspot names and factory router names. Public Wi-Fi is not automatically rated dangerous |
 | **Overview** | Everything you checked: Assessed, Not assessed or Information unavailable, a prioritised plan, and a downloadable or printable report. No combined score |
 | **Crypto Lab** | Real AES-256-GCM and SHA-256 using the browser's Web Crypto API, a Caesar cipher, and short explainers (HTTPS/TLS, hashing, WPA2 vs WPA3) |
 | **Learn** | A glossary, and **How NetSafe decides**: every rule with its points and an example |
@@ -37,7 +37,13 @@ This opens http://127.0.0.1:8000. `serve.py` uses only the Python standard libra
 
 **Option 2: open the file directly.** Double-click `index.html`. Tested in Chromium (Chrome, Edge). Every feature works, including the Web Crypto demos.
 
-**Option 3: any static host.** Upload the folder to GitHub Pages or Netlify. HTTPS hosting keeps the Web Crypto demos working.
+**Option 3: Netlify (or any static host).** No build step and no Python. HTTPS hosting keeps the Web Crypto demos working.
+
+- **Drag and drop:** open Netlify, choose *Add new site > Deploy manually*, and drop the folder that **directly contains** `index.html`, `css/`, `js/`, `assets/` and `netlify.toml`. Do not drop the outer folder from the ZIP, and do not drop only some files.
+- **From GitHub:** leave *Build command* empty and *Publish directory* as `.`. If `index.html` is inside a subfolder of the repository, set *Base directory* to that subfolder.
+- `netlify.toml` (included) publishes the folder as it is, turns off Netlify's old asset optimization and sends the security headers.
+- If the warning banner appears on the live site, it now lists the exact file and the reason (not found, blocked by the security policy, or a script error).
+- Check after deploying: `https://<your-site>.netlify.app/js/url.js` must show JavaScript code, not a "Page not found" page.
 
 ### Troubleshooting
 
@@ -45,6 +51,8 @@ This opens http://127.0.0.1:8000. `serve.py` uses only the Python standard libra
 |---|---|---|
 | Banner "NetSafe's tools are not running", buttons do nothing | Scripts were blocked or a folder is missing | Keep `css/`, `js/` and `assets/` next to `index.html`, then use `python serve.py` |
 | Same banner only with `python serve.py` on Windows (old copies of NetSafe) | Windows registry served `.js` as `text/plain`; with `nosniff` the browser refused every script | Fixed: `serve.py` now sets content types itself. Use this version |
+| Banner on the Netlify site lists `js/...: could not be loaded` | That file is not in the deploy, or its name differs in letter case (Netlify is case-sensitive: `JS/Url.js` is not `js/url.js`) | Redeploy the folder that directly contains `index.html` and all of `js/` |
+| Banner on the Netlify site with no details; console says a script from `cloudfront.net` was blocked | Netlify's old asset optimization moved the scripts to another domain, and NetSafe's security policy only runs scripts from the site itself | Redeploy with the included `netlify.toml` (`skip_processing = true`), or turn off *Post processing > Asset optimization* in the site settings |
 | AES and SHA-256 demos say "not available" | Web Crypto works only on `https://`, `localhost`/`127.0.0.1` or a local file. A phone opening `http://<your-PC-IP>` does not qualify | Use `serve.py` on the same device, open the file directly, or host on HTTPS |
 | Console shows "Refused to execute inline script" with VS Code Live Server | Live Server injects a reload script; NetSafe's security policy blocks it on purpose | Harmless; NetSafe still works. Or use `python serve.py` |
 
@@ -69,9 +77,11 @@ Details, a worked rule example and the decision log: [docs/ARCHITECTURE.md](docs
 
 ```
 index.html            single page with eight views (Home, Message, Link, Password, Wi-Fi, Overview, Crypto Lab, Learn)
+netlify.toml          Netlify settings (publish folder, no processing, security headers)
 serve.py              optional local server with security headers (Python, standard library)
 css/style.css
 js/
+  boot.js                                                  start-up diagnostics for the warning banner (loads first)
   url.js  message.js  password.js  rules.js  crypto.js     rule engines (pure)
   overview.js                                              summaries, statuses, plan, report
   *-ui.js  nav.js  content.js                              rendering, page navigation, text
@@ -91,7 +101,7 @@ pip install playwright && playwright install chromium
 python tests/browser/browser_tests.py                  # real-browser tests, about 2 minutes (--only nav,overview for a subset)
 ```
 
-Last full run (Node 22, Python 3.13, Chromium 157): **280** unit checks, **15** server tests, **183** browser checks, all passed. Firefox and Safari were not run.
+Last full run (Node 22, Python 3.13, Chromium 157): **371** unit checks, **15** server tests, **198** browser checks, all passed. Firefox and Safari were not run.
 
 Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; look-alike domains and their false positives; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; correct content types even with a broken system MIME table; page navigation; real button clicks and keyboard use on every page; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
 
