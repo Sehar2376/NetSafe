@@ -2,6 +2,7 @@
 // which file failed and why (not found, blocked by the security policy, or a script error), so a broken deploy can be fixed.
 // It never hides the banner: nav.js hides it only when every part of NetSafe has loaded. Nothing is stored or sent.
 (() => {
+  document.documentElement.classList.add('js');   // JavaScript works: hide the banner from the first paint (see style.css)
   const problems = [];
   const note = text => { if (problems.indexOf(text) < 0) problems.push(text); };
   const short = url => { try { const u = new URL(url, location.href); return u.origin === location.origin ? u.pathname.replace(/^\//, '') : u.href; } catch (e) { return String(url); } };
@@ -25,7 +26,9 @@
 
   window.addEventListener('load', () => {
     const boot = document.getElementById('boot');
-    if (!boot || boot.hidden) return;   // everything started
+    if (!boot) return;
+    if (boot.hidden && PARTS.every(([check]) => has(check))) return;   // every part started (other pages' or extensions' errors are ignored)
+    boot.hidden = false; boot.classList.add('show');
     PARTS.forEach(([check, file]) => { if (!has(check)) note(file + ': did not run.'); });
     if (!problems.length) note('A NetSafe script did not finish starting. Open the browser console (F12) for details.');
     const box = document.createElement('div'); box.className = 'bootdetails';

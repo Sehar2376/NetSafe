@@ -282,3 +282,7 @@ footer{border-top-color:#1e3050}
   body{background:#fff!important;color:#000;font-family:Georgia,serif}
   .card{box-shadow:none!important}
 }
+
+/* Start-up banner: hidden as soon as JavaScript runs (boot.js adds .js to <html>); shown again only if a script fails (.show). Without JavaScript it stays visible. */
+.js .boot{display:none}
+.js .boot.show{display:block}
