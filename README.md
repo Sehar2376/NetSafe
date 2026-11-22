@@ -1,26 +1,118 @@
 # NetSafe
 
-**Check it before you click, reply or connect.** NetSafe is a privacy-first safety assistant for everyday internet situations. It explains in plain English whether a message, link, password or Wi-Fi network deserves caution, why, and exactly what to do next.
+**Check it before you click, reply or connect.**
 
-![NetSafe overview](docs/screenshots/overview-desktop.png)
+NetSafe is a privacy-first internet safety assistant for everyday people. You paste a message or a link, try a made-up password, or describe a Wi-Fi network. NetSafe then tells you in plain English how risky it looks, why, and exactly what to do next, including what to do if you already clicked, replied or paid.
 
-Runs entirely in your browser: nothing you type is stored or sent anywhere, links are never opened, and networks are never scanned. Results come from transparent rules, not AI, and are never a guarantee of safety.
+Everything runs in your browser. Nothing you type is stored or sent anywhere, links are never opened, and networks are never scanned. Results come from transparent rules, not AI, and NetSafe never calls anything "safe".
+
+![NetSafe home page](docs/screenshots/home.png)
+
+**Contents:** [Why it exists](#why-it-exists) · [Use cases](#use-cases) · [Features and screenshots](#features-and-screenshots) · [What makes it different](#what-makes-it-different) · [Quick start](#quick-start) · [How it works](#how-it-works) · [Testing](#testing) · [Privacy and security](#privacy-and-security) · [Limitations](#limitations) · [Future improvements](#future-improvements)
+
+---
 
 ## Why it exists
 
-People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, and terms like OTP, HTTPS or WPA2 are confusing, so many people guess. NetSafe's goal is to help ordinary people make a safer decision in these four situations: understand the warning signs, and know what to do next, including what to do if they already clicked or replied.
+Every day people receive fake bank messages, suspicious links and requests for money from accounts that look like a friend's. They also have to connect to unknown Wi-Fi. Terms like OTP, HTTPS or WPA3 are confusing, so many people guess, and one wrong guess can empty a bank account or lose a WhatsApp account.
 
-## Features
+Pakistan's FIA received more than 250,000 complaints in 2025 about hacked WhatsApp, Facebook and Instagram accounts and fake profiles used to ask for money. NetSafe's goal is to help ordinary people pause, recognise the warning signs, and take the right next step.
 
-| Page | What it does |
+## Use cases
+
+| Situation | What NetSafe does |
 |---|---|
-| **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats of violence or kidnapping, blackmail, "sent by mistake" refunds, task jobs, investment offers, fake BISP/e-challan/PTA/FBR notices, remote-access apps, WhatsApp code theft, account threats, fake prizes, urgency, "Hi mum, new number" scams, hacked-friend money requests (repay promises, sudden emergencies, "can't talk", payment to another person's wallet), gift card code requests, "vote for my child" and "is this you?" account-theft lures, links that show one site but go to another, risky links, sender clues) and highlights each phrase |
-| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, free hosting pages (pages.dev, vercel.app ...), fake government names, brands on other domains (including Pakistani banks, couriers and offices), and hidden links: when a link copied from an email shows one website but really goes to another, NetSafe finds the real address and warns |
-| **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps and the latest NordPass lists), phone, CNIC and birth-date passwords, keyboard and counting patterns, repeats, famous phrases and reuse |
-| **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page), plus "free" hotspot names and factory router names. Public Wi-Fi is not automatically rated dangerous |
-| **Overview** | Everything you checked: Assessed, Not assessed or Information unavailable, a prioritised plan, and a downloadable or printable report. No combined score |
-| **Crypto Lab** | Real AES-256-GCM and SHA-256 using the browser's Web Crypto API, a Caesar cipher, and short explainers (HTTPS/TLS, hashing, WPA2 vs WPA3) |
-| **Learn** | A glossary, and **How NetSafe decides**: every rule with its points and an example |
+| An SMS "from your bank" says your account will be blocked and asks for an OTP | Rates it High, highlights each warning phrase, and puts the most important step first: never share an OTP |
+| A friend or relative suddenly asks for money on WhatsApp ("I'm at the hospital, send 15,000 to this JazzCash number, I can't talk, I'll pay you back") | Recognises the hacked-account pattern and tells you to call them on their usual number before sending anything |
+| Someone asks you to buy Google Play or Apple gift cards and send the codes | Always High: gift card codes are untraceable cash |
+| "Please vote for my niece in this contest" with a link, or "someone sent you a code by mistake, send it back" | Flags the WhatsApp account-theft tricks and explains what happens if you enter the code |
+| "Hi mum, this is my new number, my phone fell in water" | Warns that this is how "new number" scams begin, and to check on the old number |
+| A link that looks like your bank, Google or a government office | Shows which part of the address decides where it really goes, and flags look-alike names (`g00gle`, `paypa1`, Cyrillic letters) and brand names on other domains |
+| A link in an email whose text says `www.google.com` but which really goes somewhere else | Reads the real address from the copied email and warns about the mismatch |
+| Fake e-challan, BISP, tax refund or parcel messages | Flags official-sounding names that come with a payment, link or threat |
+| Choosing a new password | Explains why `Summer2024!` is weak (a word plus a year) and suggests a passphrase |
+| Connecting to airport, café or hotel Wi-Fi | Rates the risk from what you know about the network and says what is reasonable to do on it |
+| Learning how encryption works (students, teachers) | The Crypto Lab runs real AES-GCM and SHA-256 and shows tampering being detected |
+
+## Features and screenshots
+
+### Check a message
+
+Finds scam wording in an SMS, WhatsApp message or email and highlights each phrase. It covers:
+- OTP, password and card requests, and payment demands
+- Threats of violence or kidnapping, and blackmail
+- "Sent by mistake" refunds, task jobs and investment offers
+- Fake BISP, e-challan, PTA and FBR notices
+- Remote-access apps and WhatsApp code theft
+- Hacked-friend money requests: repay promises, sudden emergencies, "can't talk", payment to another person's wallet
+- Gift card codes, "vote for my child", "is this you?" links, and "Hi mum, new number"
+- Risky links, and links that show one site but go to another
+
+Every finding says what was noticed, why it matters, what could happen and what to do.
+
+| A fake bank alert | A message from a friend's hacked account |
+|---|---|
+| ![Message checker: phishing result](docs/screenshots/message-phishing.png) | ![Message checker: hacked friend result](docs/screenshots/message-hacked-friend.png) |
+
+### Check a link
+
+Analyses a web address as text only, and never opens it. It checks for:
+- HTTP links and IP-address links
+- `name@host` tricks
+- Look-alike names (punycode, Cyrillic letters, `goog1e`, `rnicrosoft`) and brand names on other domains, including Pakistani banks, wallets and couriers
+- Shorteners, free hosting pages and fake government names
+- **Hidden links:** when a link copied from an email shows one website but goes to another, NetSafe puts the real address in the box and warns
+
+| Hidden address found in a copied link | The result for the real address |
+|---|---|
+| ![Link checker: hidden address](docs/screenshots/link-hidden-address.png) | ![Link checker: result](docs/screenshots/link-result.png) |
+
+### Password strength
+
+Estimates strength on your device from:
+- Length
+- Common passwords, including `p@ssw0rd`-style swaps
+- Phone, CNIC and birth-date passwords
+- Keyboard and counting patterns, repeats and famous phrases
+- Reuse (from the box you tick)
+
+### Wi-Fi risk
+
+Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, public or private, shared password, login page). It also flags "free" hotspot names and factory router names. Public Wi-Fi is not automatically rated dangerous.
+
+| Password strength | Wi-Fi risk |
+|---|---|
+| ![Password checker](docs/screenshots/password.png) | ![Wi-Fi assessment](docs/screenshots/wifi.png) |
+
+### Crypto Lab, Overview and Learn
+
+- **Crypto Lab:**
+  - Real AES-256-GCM (with PBKDF2) and SHA-256 using the browser's Web Crypto API.
+  - Change one character of the encrypted text and decryption is refused.
+  - A Caesar cipher with brute force.
+  - Short explainers on HTTPS/TLS, hashing and WPA2 vs WPA3.
+- **Overview:** everything you checked, marked Assessed, Not assessed or Information unavailable. It gives a prioritised plan and a downloadable or printable report. There is no combined score, and it never keeps what you typed.
+- **Learn:** a glossary, and *How NetSafe decides*, which lists every rule with its points and an example.
+
+| Crypto Lab | Overview | Learn |
+|---|---|---|
+| ![Crypto Lab](docs/screenshots/crypto-lab.png) | ![Overview](docs/screenshots/overview.png) | ![Learn](docs/screenshots/learn.png) |
+
+### On a phone
+
+The layout works from 320 px wide upwards.
+
+<img src="docs/screenshots/home-mobile.png" alt="NetSafe on a phone" width="300">
+
+## What makes it different
+
+- **Private by design.** There is no server, account, analytics or third-party code. You can safely paste a private message, because it never leaves your device.
+- **Covers four everyday situations in one place:** message, link, password and Wi-Fi, plus an overview, a report and learning pages.
+- **Explains instead of only judging.** Every warning shows the exact phrase, why it matters, and what to do, including steps for people who already clicked, replied or paid.
+- **Transparent.** No AI and no black box: every rule and its points are listed on the Learn page.
+- **Honest.** It never says "safe". It says "no strong warning signs", and lists what it did not check.
+- **Local.** It knows Pakistani scams (JazzCash, Easypaisa, BISP, e-challan, local banks, CNIC passwords) and some Roman Urdu wording, and points to FIA cybercrime (1991).
+- **Educational.** The Crypto Lab shows real encryption and tamper detection, not a simulation.
 
 ## Quick start
 
@@ -33,27 +125,23 @@ cd netsafe
 python serve.py          # Windows: py serve.py    macOS/Linux: python3 serve.py
 ```
 
-This opens http://127.0.0.1:8000. `serve.py` uses only the Python standard library. It adds real security headers and serves only the app's files.
+This opens http://127.0.0.1:8000. `serve.py` uses only the Python standard library. It adds security headers and serves only the app's files.
 
 **Option 2: open the file directly.** Double-click `index.html`. Tested in Chromium (Chrome, Edge). Every feature works, including the Web Crypto demos.
 
-**Option 3: Netlify (or any static host).** No build step and no Python. HTTPS hosting keeps the Web Crypto demos working.
-
-- **Drag and drop:** open Netlify, choose *Add new site > Deploy manually*, and drop the folder that **directly contains** `index.html`, `css/`, `js/`, `assets/` and `netlify.toml`. Do not drop the outer folder from the ZIP, and do not drop only some files.
-- **From GitHub:** leave *Build command* empty and *Publish directory* as `.`. If `index.html` is inside a subfolder of the repository, set *Base directory* to that subfolder.
-- `netlify.toml` (included) publishes the folder as it is, turns off Netlify's old asset optimization and sends the security headers.
-- If the warning banner appears on the live site, it now lists the exact file and the reason (not found, blocked by the security policy, or a script error).
+**Option 3: any static host (Netlify, GitHub Pages).**
+- No build step is needed, and HTTPS hosting keeps the Web Crypto demos working.
+- For Netlify: leave *Build command* empty and set *Publish directory* to `.`. The included `netlify.toml` publishes the folder as it is and sends the security headers.
 
 ### Troubleshooting
 
 | What you see | Cause | Fix |
 |---|---|---|
 | Banner "NetSafe's tools are not running", buttons do nothing | Scripts were blocked or a folder is missing | Keep `css/`, `js/` and `assets/` next to `index.html`, then use `python serve.py` |
-| Same banner only with `python serve.py` on Windows (old copies of NetSafe) | Windows registry served `.js` as `text/plain`; with `nosniff` the browser refused every script | Fixed: `serve.py` now sets content types itself. Use this version |
-| Banner on the Netlify site lists `js/...: could not be loaded` | That file is not in the deploy, or its name differs in letter case (Netlify is case-sensitive: `JS/Url.js` is not `js/url.js`) | Redeploy the folder that directly contains `index.html` and all of `js/` |
-| Banner on the Netlify site with no details; console says a script from `cloudfront.net` was blocked | Netlify's old asset optimization moved the scripts to another domain, and NetSafe's security policy only runs scripts from the site itself | Redeploy with the included `netlify.toml` (`skip_processing = true`), or turn off *Post processing > Asset optimization* in the site settings |
-| AES and SHA-256 demos say "not available" | Web Crypto works only on `https://`, `localhost`/`127.0.0.1` or a local file. A phone opening `http://<your-PC-IP>` does not qualify | Use `serve.py` on the same device, open the file directly, or host on HTTPS |
-| Console shows "Refused to execute inline script" with VS Code Live Server | Live Server injects a reload script; NetSafe's security policy blocks it on purpose | Harmless; NetSafe still works. Or use `python serve.py` |
+| The banner lists `js/...: could not be loaded` on a hosted site | That file is not in the deploy, or its name differs in letter case | Redeploy the folder that directly contains `index.html` and all of `js/` |
+| Banner with no details; console says a script from another domain was blocked | The host's asset optimization moved the scripts | Use the included `netlify.toml` (`skip_processing = true`), or turn asset optimization off |
+| AES and SHA-256 demos say "not available" | Web Crypto works only on `https://`, `localhost`/`127.0.0.1` or a local file | Use `serve.py` on the same device, open the file directly, or host on HTTPS |
+| "Refused to execute inline script" with VS Code Live Server | Live Server injects a reload script, which the security policy blocks on purpose | Harmless, or use `python serve.py` |
 
 ## How it works
 
@@ -66,65 +154,120 @@ flowchart LR
   O --> UI
 ```
 
-- **Engines are pure functions** (no DOM, network or storage) that run unchanged in the browser and under Node tests.
-- **Rules are data.** Each engine has one readable rule table; the Learn page is generated from the same tables.
-- **The overview only receives rule-written advice**, never what you typed (tests check this for every input type).
+- **The engines are pure functions:** no DOM, network or storage. They run unchanged in the browser and under Node tests.
+- **Rules are data.** Each engine has one readable rule table, and the Learn page is generated from the same tables.
+- **Scores are additive points with clear levels.** Some rules always mean High: asking for an OTP, a password or card details, gift card codes, threats, and code theft.
+- **The Overview only receives advice written by the rules**, never what you typed. Tests check this for every input type.
 
 Details, a worked rule example and the decision log: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Project structure
+### Project structure
 
 ```
 index.html            single page with eight views (Home, Message, Link, Password, Wi-Fi, Overview, Crypto Lab, Learn)
-netlify.toml          Netlify settings (publish folder, no processing, security headers)
+netlify.toml          static-host settings (publish folder, no processing, security headers)
 serve.py              optional local server with security headers (Python, standard library)
 css/style.css
+assets/               logo, icons, self-hosted fonts
 js/
   boot.js                                                  start-up diagnostics for the warning banner (loads first)
   url.js  message.js  password.js  rules.js  crypto.js     rule engines (pure)
   overview.js                                              summaries, statuses, plan, report
   *-ui.js  nav.js  content.js                              rendering, page navigation, text
 tests/
-  *.test.js                                                unit tests (Node)
+  *.test.js                                                unit and scenario tests (Node)
   test_serve.py                                            server tests (Python unittest)
   browser/browser_tests.py                                 real-browser tests (Playwright)
-docs/                 architecture, security and privacy, limitations, demo script
+docs/                 architecture, security and privacy, limitations, demo script, screenshots
 ```
 
 ## Testing
 
 ```bash
-node tests/run-all.js                                  # unit tests (Node 20+, no packages)
+node tests/run-all.js                                  # unit and scenario tests (Node 20+, no packages)
 python -m unittest discover -s tests -p "test_*.py"    # server tests (Python standard library)
 pip install playwright && playwright install chromium
-python tests/browser/browser_tests.py                  # real-browser tests, about 2 minutes (--only nav,overview for a subset)
+python tests/browser/browser_tests.py                  # real-browser tests, about 2 minutes
 ```
 
-Last full run (Node 22, Python 3.13, Chromium 157): **619** unit checks (including a 246-scenario real-world sweep), **15** server tests, **199** browser checks, all passed. Firefox and Safari were not run.
+Last full run (Node 22, Python 3.13, Chromium 157), all passed:
+- **692** unit and scenario checks in 12 suites. These include a 246-scenario real-world sweep and 60 hacked-friend scam and everyday-message scenarios.
+- **15** server tests.
+- **199** browser checks.
 
-Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; look-alike domains and their false positives; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; correct content types even with a broken system MIME table; page navigation; real button clicks and keyboard use on every page; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
+The tests cover:
+- Every rule engine and its scoring, and that each documented rule example really triggers its rule.
+- Look-alike domains and hidden links, and their false positives.
+- That everyday messages stay Low.
+- Privacy of the overview and report, and that script or HTML pasted into any input stays inert.
+- That nothing uses the network or storage, and the security policy.
+- Real clicks and keyboard use on every page.
+- Accessibility: contrast, accessible names, focus, 44 px targets.
+- Layout from 320 to 1280 px.
 
 ## Privacy and security
 
-No backend, accounts, analytics or third-party code. Fonts (Atkinson Hyperlegible and Bricolage Grotesque, SIL Open Font License) are stored in `assets/fonts`, so even typography loads from the site itself. A strict Content-Security-Policy blocks everything except the app's own files, so the page cannot send data out. All text is rendered with `textContent`. The AES demo uses only Web Crypto (PBKDF2 and AES-GCM). Full details and threat model: [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
+- No backend, accounts, analytics or third-party code.
+- The fonts (Atkinson Hyperlegible and Bricolage Grotesque, SIL Open Font License) are stored in `assets/fonts`.
+- A strict Content-Security-Policy allows only the app's own files, so the page cannot send data out.
+- All text is rendered with `textContent`, never `innerHTML`.
+- Links pasted from an email are read with an inert `DOMParser`: no scripts run and no images load.
+- The AES demo uses only Web Crypto (PBKDF2 and AES-GCM).
+
+Full details and threat model: [docs/SECURITY_AND_PRIVACY.md](docs/SECURITY_AND_PRIVACY.md).
 
 ## Limitations
 
-Rule-based and English-focused (plus a few Roman Urdu phrases); links are judged by text only (no reputation, certificate or redirect checks), so a hacked real site or a new scam site that copies no known name is not detected; hidden-link detection needs a copy from an email or web page in a computer browser (SMS and chat apps copy plain text only); the password checker has no breach database; the Wi-Fi check uses your answers and cannot detect fake hotspots; the crypto demo is a learning tool. Full list: [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+NetSafe helps people pause and check. It does not replace judgement, a bank or a security professional.
 
-## Roadmap
+**General**
+- **Rules, not AI.** It recognises known scam wording and link tricks. A scam written in a new way can get Low, and a genuine message can sometimes get a warning.
+- **Low is not "safe".** Every page says so.
+- **No online lookups, by design.** It does not check website reputation, blocklists, certificates, redirects, domain age or data breaches, because that would mean sending what you typed to a server.
+- **Languages:** the interface is in English, and the message rules cover English and some Roman Urdu. Urdu script and other languages are not covered.
 
-| Idea | Effort | Notes |
+**Messages**
+- **No sender check.** It cannot tell that an account was hacked: the message comes from the real number, name and photo. It only recognises the wording these scams use.
+- **Openers pass.** A message like "Hi, are you free?" has nothing to detect yet.
+- **A real friend asking for money** with the same words gets the same warning. The advice (call them first) is right either way.
+- **Text only.** It cannot read images, voice notes or attachments.
+
+**Links**
+- **Text only.** A hacked real website, or a brand-new scam site that copies no known name, is not detected.
+- **Look-alikes:** detection compares names against a built-in list of brands, banks, wallets, couriers and government offices.
+- **Hidden links** are found only when the copy carries the real address, as copying from an email or web page in a computer browser does. SMS and chat apps on phones copy plain text only.
+
+**Passwords**
+- **An estimate, not a cracking time.** There is no breach database, and it knows only a built-in list of common passwords.
+
+**Wi-Fi**
+- **Your answers only.** It cannot scan, detect a fake "evil twin" hotspot, or verify the security type you chose.
+
+**Crypto Lab and Overview**
+- **The Crypto Lab is a learning demo.** Do not use it for real secrets.
+- **Results are lost on reload,** because they are kept in memory only.
+
+**Testing**
+- **Chromium only.** Browser tests ran on Chromium. Firefox, Safari, real phones and screen readers were not tested.
+
+The full list, with numbers for every rule set, is in [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
+
+## Future improvements
+
+| Improvement | Why | Effort |
 |---|---|---|
-| **Local Wi-Fi agent in Python**: read the real security type and network name from the OS (`netsh wlan` / `nmcli` / `airport`) and feed the Wi-Fi page automatically | Medium | Matches the original proposal's "automatic detection" goal; the agent stays on `127.0.0.1` |
-| **Flask + SQLite backend** for opt-in reporting of scam numbers and links, shared across users | Large | Needs a consent design; keep password checks in the browser; cannot run on GitHub Pages |
-| Full Public Suffix List and a larger brand and look-alike list (Pakistani banks, telcos, couriers) | Small | Improves link accuracy |
-| Urdu and Roman Urdu message rules, Urdu interface | Medium | Message rules are data, so this is mostly adding entries and tests |
-| Opt-in breach check (k-anonymity range API) | Small | Needs explicit consent and a narrow network exception in the policy |
-| Installable offline app (PWA) and "share to NetSafe" from WhatsApp | Medium | Needs a service worker, which the current audit forbids on purpose |
-| Light theme and settings | Small | |
-| Single-file build (`python tools/bundle.py`) for easy sharing | Small | Optional |
+| **Browser extension or "share to NetSafe" from WhatsApp/SMS** (installable PWA) | Check a message or the real link address without copying and pasting, including on phones | Medium |
+| **Urdu script and more Roman Urdu rules**, Urdu interface | Many scam messages in Pakistan are in Urdu | Medium |
+| **Opt-in reputation check** (for example Google Safe Browsing, through a small backend that hides the API key) | Catch known scam sites and hacked real sites that text rules miss. Off by default, with clear consent | Medium |
+| **Opt-in breach check** for passwords (k-anonymity range API: only 5 characters of a hash are sent) | Tell people if a password appeared in a data breach | Small |
+| **Community scam reports** (Flask or similar backend, moderated) | Share new scam numbers, wallet accounts and links between users | Large |
+| **Local Wi-Fi helper** that reads the real security type and network name from the operating system | Removes guesswork from the Wi-Fi check | Medium |
+| **Screenshot and QR-code checking** (text read on the device) | Many scams arrive as images or QR codes | Medium |
+| **Full Public Suffix List and a larger brand list** | Fewer missed look-alikes and fewer false alarms | Small |
+| **Voice-clone and video-call scam guidance** | AI voice scams are growing | Small |
+| **Light theme, larger text mode, saved settings** | Accessibility and comfort for older users | Small |
+| **Firefox, Safari, phone and screen-reader testing** | Wider support | Small |
 
 ## Context
 
-Built as a Computer Networks project (wireless security, encryption and hashing, HTTPS/TLS, authentication, phishing and man-in-the-middle attacks) and for SafeSpace Hacks. Educational only: not a penetration-testing tool, a professional security audit, or legal or financial advice.
+NetSafe was built as a Computer Networks project, covering wireless security, encryption and hashing, HTTPS/TLS, authentication, phishing and man-in-the-middle attacks, and for **SafeSpace Hacks**. It is educational only. It is not a penetration-testing tool, a professional security audit, or legal or financial advice. If you have lost money or an account, contact your bank and report it (in Pakistan: FIA cybercrime helpline 1991).
