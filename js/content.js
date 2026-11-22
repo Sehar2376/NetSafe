@@ -15,19 +15,31 @@ const EDU = [
  ['Evil twin','Fake hotspot copying a real network name to lure users. Confirm the exact name and prefer HTTPS/VPN.']
 ];
 
-// Short, evergreen security facts (no invented news or statistics). Used by the typing effect and ticker.
-const HEADLINES = [
- 'Open Wi-Fi sends your data without encryption.',
- 'WEP encryption can be broken in minutes.',
- 'A shared Wi-Fi password does not stop other users from watching.',
- 'Fake hotspots copy real network names. Confirm before you connect.',
- 'Check a network in under a minute with NetSafe.'
-];
-const TICKER = [
- 'HTTPS protects page contents on untrusted Wi-Fi',
- 'WPA3 is the strongest current Wi-Fi protection',
- 'Use mobile data for banking on public networks',
- 'Captive portal login pages are easy to imitate',
- 'Long, unique passphrases beat short complex passwords',
- 'NetSafe is an educational estimate, not a security audit'
+
+// Concept cards for the Cryptography Lab. Plain text only (rendered with textContent).
+const CONCEPTS = [
+ { title: 'Encryption vs hashing', lead: 'Both scramble data, but for different jobs.', items: [
+  ['Encryption', 'Two-way. Needs a key. Readable data becomes scrambled data, and the right key turns it back. Protects confidentiality: HTTPS, Wi-Fi, locked files.'],
+  ['Hashing', 'One-way. Gives a fixed-size fingerprint that cannot be turned back. Used to check data was not changed, and (with salt and a slow method) to store passwords.'],
+  ['Remember', 'You cannot "decrypt" a hash, but a short or guessable input can still be found by trying many guesses.'] ] },
+ { title: 'Symmetric vs asymmetric encryption', lead: 'The difference is how many keys are used.', items: [
+  ['Symmetric (e.g. AES)', 'One shared key locks and unlocks. Fast, so used for the bulk of data. Problem: both sides must get the key safely.'],
+  ['Asymmetric (e.g. RSA, elliptic curves)', 'A key pair: a public key anyone can have and a private key kept secret. Slower. Used to agree on keys and to prove identity with signatures.'],
+  ['In practice', 'Systems combine them: asymmetric methods agree on a key, then symmetric encryption protects the data. HTTPS works this way.'] ] },
+ { title: 'How HTTPS and TLS protect a page', lead: 'A simplified view of what happens when you open an https:// site.', items: [
+  ['1. Hello', 'Your browser and the server say hello and agree which algorithms to use.'],
+  ['2. Certificate', 'The server shows a certificate, a signed statement that it controls that domain name.'],
+  ['3. Check', 'Your browser checks the certificate is valid, matches the site name and was issued by a trusted authority.'],
+  ['4. Key agreement', 'Both sides agree on a shared secret key without sending it across the network.'],
+  ['5. Encrypted session', 'The rest of the session uses fast symmetric encryption (such as AES-GCM), which also detects tampering.'],
+  ['Limit', 'The padlock means the connection to that domain is encrypted. It does not mean the site is honest. Scam sites can use HTTPS too.'] ] },
+ { title: 'Confidentiality, integrity and availability', lead: 'The three goals of security, often called the CIA triad.', items: [
+  ['Confidentiality', 'Only the right people can read the data. Example: encryption stops others on Wi-Fi reading your traffic.'],
+  ['Integrity', 'Data is not changed without being noticed. Example: hashes and the AES-GCM tag reveal tampering.'],
+  ['Availability', 'Systems and data work when needed. Example: backups, updates and protection against overload attacks.'] ] },
+ { title: 'WPA2 and WPA3 in simple terms', lead: 'How modern Wi-Fi protection works.', items: [
+  ['WPA2-Personal', 'Your password is turned into a key with PBKDF2 hashing. Traffic is encrypted with AES. Weakness: someone who captures the connection handshake can try password guesses offline, so a weak password is risky.'],
+  ['WPA3-Personal', 'Uses SAE, a password-based key exchange. Each guess needs a live exchange with the network, so offline guessing is resisted. Each session gets its own keys, so a later password leak does not expose old traffic.'],
+  ['Enhanced Open (OWE)', 'Where both the device and router support it, encrypts traffic on open networks without a password.'],
+  ['Limit', 'None of these stop you joining a fake hotspot with a copied name. Check the exact network name and use HTTPS.'] ] }
 ];
