@@ -20,6 +20,18 @@ import webbrowser
 ROOT = pathlib.Path(__file__).resolve().parent
 PUBLIC_FILES = ('index.html', 'favicon.ico')
 PUBLIC_DIRS = ('css', 'js', 'assets')
+# Fixed content types. Python's default guess reads the Windows registry, where ".js" is often mapped to
+# "text/plain". With the "nosniff" header below, browsers then refuse to run every script and no button works.
+MIME_TYPES = {
+    '.html': 'text/html; charset=utf-8',
+    '.js': 'text/javascript; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.png': 'image/png',
+    '.ico': 'image/x-icon',
+    '.svg': 'image/svg+xml',
+    '.json': 'application/json',
+    '.txt': 'text/plain; charset=utf-8',
+}
 
 
 def content_security_policy():
@@ -46,6 +58,11 @@ def security_headers():
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     server_version = 'NetSafe'
+    extensions_map = MIME_TYPES
+
+    def guess_type(self, path):
+        ext = posixpath.splitext(str(path))[1].lower()
+        return MIME_TYPES.get(ext, 'application/octet-stream')
 
     def version_string(self):
         return self.server_version      # do not reveal the Python version

@@ -15,7 +15,7 @@ People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, 
 | Page | What it does |
 |---|---|
 | **Check a message** | Finds scam wording in an SMS, WhatsApp message or email (OTP, password and card requests, payment demands, threats, fake prizes, urgency, "new number" scams, risky links, sender clues) and highlights each phrase |
-| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike (punycode) names, shorteners, brands on other domains, and more |
+| **Check a link** | Analyses a web address as text only: HTTP, IP-address links, `name@host` tricks, look-alike names (punycode, Cyrillic letters, `googIe`/`paypai`/`rnicrosoft` spellings), shorteners, brands on other domains, and more |
 | **Password** | Estimates strength from length, common passwords (including `p@ssw0rd` swaps), keyboard and counting patterns, repeats, famous phrases and reuse |
 | **Wi-Fi** | Scores a network from your answers (Open, WEP, WPA to WPA3, Enterprise, Enhanced Open, public or private, shared password, login page). Public Wi-Fi is not automatically rated dangerous |
 | **Overview** | Everything you checked: Assessed, Not assessed or Information unavailable, a prioritised plan, and a downloadable or printable report. No combined score |
@@ -24,12 +24,29 @@ People get fake bank messages, suspicious links and unfamiliar Wi-Fi every day, 
 
 ## Quick start
 
+NetSafe is plain HTML, CSS and JavaScript. It needs no install, no build step and no backend. Python is **optional**: it only runs a small local web server.
+
+**Option 1: local server (recommended)**
+
 ```bash
-git clone <your-repo-url> && cd netsafe
-python serve.py          # opens http://127.0.0.1:8000
+cd netsafe
+python serve.py          # Windows: py serve.py    macOS/Linux: python3 serve.py
 ```
 
-`serve.py` is a tiny local server (Python standard library, no installs) that adds real security headers and serves only the app's files. You can also open `index.html` directly (tested in Chromium) or host the folder on GitHub Pages or Netlify. If the page says "NetSafe's tools are not running", a script was blocked or a folder is missing: use `python serve.py`.
+This opens http://127.0.0.1:8000. `serve.py` uses only the Python standard library. It adds real security headers and serves only the app's files.
+
+**Option 2: open the file directly.** Double-click `index.html`. Tested in Chromium (Chrome, Edge). Every feature works, including the Web Crypto demos.
+
+**Option 3: any static host.** Upload the folder to GitHub Pages or Netlify. HTTPS hosting keeps the Web Crypto demos working.
+
+### Troubleshooting
+
+| What you see | Cause | Fix |
+|---|---|---|
+| Banner "NetSafe's tools are not running", buttons do nothing | Scripts were blocked or a folder is missing | Keep `css/`, `js/` and `assets/` next to `index.html`, then use `python serve.py` |
+| Same banner only with `python serve.py` on Windows (old copies of NetSafe) | Windows registry served `.js` as `text/plain`; with `nosniff` the browser refused every script | Fixed: `serve.py` now sets content types itself. Use this version |
+| AES and SHA-256 demos say "not available" | Web Crypto works only on `https://`, `localhost`/`127.0.0.1` or a local file. A phone opening `http://<your-PC-IP>` does not qualify | Use `serve.py` on the same device, open the file directly, or host on HTTPS |
+| Console shows "Refused to execute inline script" with VS Code Live Server | Live Server injects a reload script; NetSafe's security policy blocks it on purpose | Harmless; NetSafe still works. Or use `python serve.py` |
 
 ## How it works
 
@@ -52,7 +69,7 @@ Details, a worked rule example and the decision log: [docs/ARCHITECTURE.md](docs
 
 ```
 index.html            single page with eight views (Home, Message, Link, Password, Wi-Fi, Overview, Crypto Lab, Learn)
-serve.py              local server with security headers (Python, standard library)
+serve.py              optional local server with security headers (Python, standard library)
 css/style.css
 js/
   url.js  message.js  password.js  rules.js  crypto.js     rule engines (pure)
@@ -69,12 +86,14 @@ docs/                 architecture, security and privacy, limitations, demo scri
 
 ```bash
 node tests/run-all.js                                  # unit tests (Node 20+, no packages)
-python -m unittest discover -s tests -p "test_*.py"    # server tests
+python -m unittest discover -s tests -p "test_*.py"    # server tests (Python standard library)
 pip install playwright && playwright install chromium
-python tests/browser/browser_tests.py                  # browser tests, about 2 minutes (--only nav,overview for a subset)
+python tests/browser/browser_tests.py                  # real-browser tests, about 2 minutes (--only nav,overview for a subset)
 ```
 
-Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; page navigation; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
+Last full run (Node 22, Python 3.13, Chromium 157): **280** unit checks, **15** server tests, **183** browser checks, all passed. Firefox and Safari were not run.
+
+Covered: every rule engine and its scoring; that documented rule examples really trigger their rules; look-alike domains and their false positives; privacy of the overview and report; script and HTML payloads in every input stay inert; no network or storage use; the security policy; correct content types even with a broken system MIME table; page navigation; real button clicks and keyboard use on every page; accessibility on all pages (text contrast, accessible names, keyboard focus, 44 px targets); layout from 320 to 1280 px. Browser tests run on Chromium only.
 
 ## Privacy and security
 
@@ -90,7 +109,7 @@ Rule-based and English-focused (plus a few Roman Urdu phrases); links are judged
 |---|---|---|
 | **Local Wi-Fi agent in Python**: read the real security type and network name from the OS (`netsh wlan` / `nmcli` / `airport`) and feed the Wi-Fi page automatically | Medium | Matches the original proposal's "automatic detection" goal; the agent stays on `127.0.0.1` |
 | **Flask + SQLite backend** for opt-in reporting of scam numbers and links, shared across users | Large | Needs a consent design; keep password checks in the browser; cannot run on GitHub Pages |
-| Full Public Suffix List and a larger brand list (Pakistani banks, telcos, couriers) | Small | Improves link accuracy |
+| Full Public Suffix List and a larger brand and look-alike list (Pakistani banks, telcos, couriers) | Small | Improves link accuracy |
 | Urdu and Roman Urdu message rules, Urdu interface | Medium | Message rules are data, so this is mostly adding entries and tests |
 | Opt-in breach check (k-anonymity range API) | Small | Needs explicit consent and a narrow network exception in the policy |
 | Installable offline app (PWA) and "share to NetSafe" from WhatsApp | Medium | Needs a service worker, which the current audit forbids on purpose |
